@@ -1,10 +1,25 @@
 package: github.com/CANARIA/canaria-api
 import:
-- package: github.com/Sirupsen/logrus
-- package: github.com/jinzhu/gorm
-- package: github.com/go-sql-driver/mysql
-- package: github.com/garyburd/redigo
-  subpackages:
-  - redis
-- package: github.com/kelseyhightower/envconfig
+  - package: github.com/dgrijalva/jwt-go
+  - package: github.com/facebookgo/grace
+    subpackages:
+    - gracehttp
+  - package: github.com/go-sql-driver/mysql
+  - package: github.com/Sirupsen/logrus
+  - package: github.com/jinzhu/gorm
+  - package: github.com/labstack/echo
+    version: ^3.0.3
+  - package: github.com/garyburd/redigo
+    subpackages:
+    - redis
+  - package: github.com/kelseyhightower/envconfig
+  - package: github.com/labstack/gommon
+    subpackages:
+    - log
+  - package: golang.org/x/net
+    subpackages:
+    - websocket
+  - package: golang.org/x/crypto
+    subpackages:
+    - ocsp
 
