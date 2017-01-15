@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  app:
+    build: .docker/web
+    ports:
+      - 5000:5000
+    links:
+      - mongo
+    volumes:
+      - .:/go/src/github.com/SnippetsBucket/snicket
+    command: bash -c 'cd /go/src/github.com/SnippetsBucket/snicket/ && go run server.go'
+    container_name: snicket-web
+
+  mongo:
+    image: mongo:3.4.0
+    ports:
+    - 27017:27017
+    volumes:
+    - mongo-data:/data/db
+    container_name: snicket-mongo
+
+volumes:
+  mongo-data:
+    driver: local
