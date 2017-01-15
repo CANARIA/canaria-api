@@ -19,8 +19,6 @@ func Init() *echo.Echo {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	e.Debug()
-
 	e.Use(mw.Logger())
 	e.Use(mw.Recover())
 	e.Use(mw.Gzip())

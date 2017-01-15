@@ -1,5 +1,8 @@
 package: github.com/CANARIA/canaria-api
 import:
+  - package: github.com/labstack/echo
+    subpackages:
+    - middleware
   - package: github.com/dgrijalva/jwt-go
   - package: github.com/facebookgo/grace
     subpackages:
@@ -7,8 +10,6 @@ import:
   - package: github.com/go-sql-driver/mysql
   - package: github.com/Sirupsen/logrus
   - package: github.com/jinzhu/gorm
-  - package: github.com/labstack/echo
-    version: ^3.0.3
   - package: github.com/garyburd/redigo
     subpackages:
     - redis

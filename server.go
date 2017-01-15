@@ -1,13 +1,9 @@
 package main
 
-import (
-	"github.com/CANARIA/canaria-api/config"
-	"github.com/CANARIA/canaria-api/router"
-
-	"github.com/labstack/echo/engine/standard"
-)
+import "github.com/CANARIA/canaria-api/router"
+import "github.com/canaria/canaria-api/config"
 
 func main() {
-	router := router.Init()
-	router.Run(standard.New(config.GetPort()))
+	e := router.Init()
+	e.Logger.Fatal(e.Start(config.GetPort()))
 }
