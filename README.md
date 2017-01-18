@@ -3,6 +3,6 @@
 APIサーバです。
 
 ```
-$ glide install
+$ make deps
 $ go run server.go
 ```
