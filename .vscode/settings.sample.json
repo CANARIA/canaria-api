@@ -1,0 +1,19 @@
+// 以下の設定を自分のsetting.jsonに追加するなりすると幸せになります。
+{
+    "go.buildOnSave": true,
+    "go.lintOnSave": true,
+    "go.vetOnSave": true,
+    "go.buildTags": "",
+    "go.buildFlags": [],
+    "go.lintTool": "golint",
+    "go.lintFlags": [],
+    "go.vetFlags": [],
+    "go.coverOnSave": false,
+    "go.useCodeSnippetsOnFunctionSuggest": false,
+    "go.formatOnSave": true,
+    "go.formatTool": "goreturns",
+    "go.formatFlags": [],
+    "go.goroot": "Your GOROOT", // $ go envで確認できます
+    "go.gopath": "This project dir", // 上記同様
+    "go.gocodeAutoBuild": false
+}
