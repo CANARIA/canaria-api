@@ -21,11 +21,17 @@ $ docker-compose ps
 mysqlには`root`/`password`でログインできる<br>
 データベースは`canaria`
 
+## DBのマイグレーション
+```
+$ make migrate
+```
+
 ## APIサーバの起動
 
 ```
 # 依存ライブラリのDL
 $ make deps
+
 # APIサーバの起動
 $ go run server.go
 ```

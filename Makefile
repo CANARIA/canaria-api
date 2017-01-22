@@ -1,8 +1,8 @@
 deps:
-	go get bitbucket.org/liamstask/goose/cmd/goose
 	glide install
 
 migrate:
+	go get bitbucket.org/liamstask/goose/cmd/goose
 	goose up
 
 fmt:
