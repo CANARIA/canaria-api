@@ -1,25 +1,31 @@
 version: '2'
 
 services:
-  app:
-    build: .docker/web
+  api:
+    build: .
     ports:
       - 5000:5000
     links:
-      - mongo
+      - mysql
     volumes:
-      - .:/go/src/github.com/SnippetsBucket/snicket
-    command: bash -c 'cd /go/src/github.com/SnippetsBucket/snicket/ && go run server.go'
-    container_name: snicket-web
+      - .:/go/src/github.com/CANARIA/canaria-api
+    command: bash -c 'cd /go/src/github.com/CANARIA/canaria-api/ && go run server.go'
+    environment:
+      - DB_HOST=mysql
+    container_name: canaria-api
 
-  mongo:
-    image: mongo:3.4.0
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=canaria
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=password
     ports:
-    - 27017:27017
+      - "3306:3306"
     volumes:
-    - mongo-data:/data/db
-    container_name: snicket-mongo
+      - db-data:/var/lib/mysql
+    container_name: canaria-db
 
 volumes:
-  mongo-data:
+  db-data:
     driver: local

@@ -1,0 +1,2 @@
+FROM golang:1.7
+EXPOSE 5000
