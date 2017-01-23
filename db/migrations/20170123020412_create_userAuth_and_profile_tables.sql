@@ -15,7 +15,7 @@ CREATE TABLE account (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE profile (
-  nickname varchar(255) NOT NULL,
+  display_name varchar(255) NOT NULL,
   bio text,
   url varchar(255),
   user_id bigint NOT NULL,
