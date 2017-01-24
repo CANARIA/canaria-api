@@ -28,7 +28,7 @@ services:
     container_name: canaria-db
 
   redis:
-    image: redis:3.0.7
+    image: redis:3.0.7-alpine
     container_name: canaria-cache
 
 volumes:
