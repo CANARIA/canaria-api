@@ -39,9 +39,15 @@ $ docker-compose ps
 立ち上がるコンテナは以下の通り
 - APIコンテナ (:5000)
 - MySQLコンテナ (:3306)
+- Redisコンテナ（:6379）
+- Redis Commanderコンテナ（:8081）
 
 mysqlには`root`/`password`でログインできる<br>
 データベースは`canaria`
+
+redisへは`redis-cli`コマンドで繋がる<br>
+GUIで確認したい場合は`localhost:8081`でRedis Commanderが開ける
+
 
 ## DBのマイグレーション
 ```sh
