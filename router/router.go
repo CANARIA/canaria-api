@@ -10,6 +10,8 @@ import
 	"net/http"
 	"runtime"
 
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
 )
@@ -27,6 +29,13 @@ func Init() *echo.Echo {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding},
 	}))
 	// e.SetHTTPErrorHandler(handler.JSONHTTPErrorHandler)
+
+	db, err := gorm.Open("mysql", "root:password@tcp(mysql:3306)/canaria?charset=utf8&parseTime=True&loc=Local")
+	if err != nil {
+		println("DB connection failed")
+	}
+
+	defer db.Close()
 
 	// set custome middleware
 	// e.Use(sckMw.TransactionHandler(db.Init()))
