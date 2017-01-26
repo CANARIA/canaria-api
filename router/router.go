@@ -10,6 +10,7 @@ import
 	"net/http"
 	"runtime"
 
+	"github.com/garyburd/redigo/redis"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/labstack/echo"
@@ -36,6 +37,20 @@ func Init() *echo.Echo {
 	}
 
 	defer db.Close()
+
+	c, err := redis.Dial("tcp", "redis:6379")
+	if err != nil {
+		println("Redis connection failed")
+	}
+
+	defer c.Close()
+
+	testKey, err := redis.String(c.Do("GET", "testkey"))
+	if err != nil {
+		println("Can not get value")
+	}
+
+	println(testKey)
 
 	// set custome middleware
 	// e.Use(sckMw.TransactionHandler(db.Init()))

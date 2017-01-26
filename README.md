@@ -66,3 +66,19 @@ $ go run server.go
 
 `localhost:5000`でAPIサーバーにアクセスできます
 
+## デバッグ
+
+```sh
+# すべてのコンテナのログが混ざって出る
+$ docker-compose logs
+
+# 特定コンテナのログのみを見たい(以下の例はAPIサーバのログを見る)
+# ※コンテナ名ではなくサービス名を指定すること
+$ docker-compose logs api
+
+# オプションの説明
+# f: ストリーミングでログを出力する
+# t: 時間を含めた詳細なログを出力する
+$ docker-compose logs -ft api
+```
+
