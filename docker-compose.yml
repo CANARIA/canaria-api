@@ -41,7 +41,7 @@ services:
     image: diyan/redis-commander
     command: --redis-host redis
     links:
-      - redis:redis
+      - redis
     ports:
       - 8081:8081
     container_name: canaria-cache-viewer
