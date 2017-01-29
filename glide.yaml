@@ -9,9 +9,7 @@ import:
     - gracehttp
   - package: github.com/go-sql-driver/mysql
   - package: github.com/Sirupsen/logrus
-  - package: github.com/jinzhu/gorm
-    subpackages:
-    - inflection
+  - package: github.com/gocraft/dbr
   - package: github.com/garyburd/redigo
     subpackages:
     - redis

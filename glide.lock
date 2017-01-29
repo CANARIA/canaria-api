@@ -1,5 +1,5 @@
-hash: 13dca8dfbdbdc4f18d9b34e00c5c224090b2de47ace1645eb5bea56c5c19e25c
-updated: 2017-01-25T18:58:53.074259008+09:00
+hash: 5ffddf591f6a1513171af697614586e5abb6ea0bc160f9a7d0255298b28cd3a7
+updated: 2017-01-30T01:13:22.390763029+09:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: a601269ab70c205d26370c16f7c81e9017c14e04
@@ -10,14 +10,16 @@ imports:
 - name: github.com/garyburd/redigo
   version: 908534c8b97586a4597e3fa195875d2d26502b97
   subpackages:
+  - internal
   - redis
 - name: github.com/go-sql-driver/mysql
   version: 2e00b5cd70399450106cec6431c2e2ce3cae5034
+- name: github.com/gocraft/dbr
+  version: 10fa49bf1ee63a0f822283ef9805d818f9e84742
 - name: github.com/jinzhu/gorm
   version: a3b8b332edf4ac4360a4f4cb95979000bd0aef8c
   subpackages:
   - dialects/mysql
-  - inflection
 - name: github.com/jinzhu/inflection
   version: 1c35d901db3da928c72a72d8458480cc9ade058f
 - name: github.com/kelseyhightower/envconfig
