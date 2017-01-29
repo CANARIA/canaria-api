@@ -4,11 +4,9 @@ import (
 	"net/http"
 
 	"github.com/CANARIA/canaria-api/model"
-	"github.com/jinzhu/gorm"
+	"github.com/gocraft/dbr"
 	"github.com/labstack/echo"
 )
-
-var db gorm.DB
 
 func AuthRegister() echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -17,8 +15,14 @@ func AuthRegister() echo.HandlerFunc {
 		if err := c.Bind(authJson); err != nil {
 			return err
 		}
-
-		model.AccountCreate(authJson, &db)
+		println("+++++++++++++++++++++++++++")
+		tx := c.Get("Tx").(*dbr.Tx)
+		println("--------------------------")
+		account := model.AccountImpl(authJson)
+		if err := account.AccountCreate(authJson, tx); err != nil {
+			println(err)
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
 
 		return c.JSON(http.StatusOK, authJson)
 	}

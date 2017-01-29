@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/jinzhu/gorm"
+	"github.com/gocraft/dbr"
 )
 
 type Account struct {
@@ -17,6 +17,20 @@ type Account struct {
 	IsDeleted   bool      `db:"is_deleted"`
 }
 
-func AccountCreate(authRegister *AuthRegister, db *gorm.DB) {
-	db.Create(authRegister)
+func AccountImpl(authRegister *AuthRegister) *Account {
+	return &Account{
+		UserId:      0,
+		UserName:    authRegister.UserName,
+		MailAddress: authRegister.MailAddress,
+		Password:    authRegister.Password,
+	}
+}
+
+func (account *Account) AccountCreate(authRegister *AuthRegister, tx *dbr.Tx) error {
+	_, err := tx.InsertInto("accounts").
+		Columns("user_name", "mailaddress", "password").
+		Record(authRegister).
+		Exec()
+
+	return err
 }
