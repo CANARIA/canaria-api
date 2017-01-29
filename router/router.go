@@ -10,12 +10,23 @@ import
 	"net/http"
 	"runtime"
 
+	"github.com/CANARIA/canaria-api/api"
 	"github.com/garyburd/redigo/redis"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
 )
+
+var db gorm.DB
+
+func init() {
+	println("最初に実行される")
+	// db, err := gorm.Open("mysql", "root:password@tcp(mysql:3306)/canaria?charset=utf8&parseTime=True&loc=Local")
+	// if err != nil {
+	// 	println("DB connection failed")
+	// }
+}
 
 func Init() *echo.Echo {
 	e := echo.New()
@@ -32,10 +43,6 @@ func Init() *echo.Echo {
 	// e.SetHTTPErrorHandler(handler.JSONHTTPErrorHandler)
 
 	db, err := gorm.Open("mysql", "root:password@tcp(mysql:3306)/canaria?charset=utf8&parseTime=True&loc=Local")
-	if err != nil {
-		println("DB connection failed")
-	}
-
 	defer db.Close()
 
 	c, err := redis.Dial("tcp", "redis:6379")
@@ -70,5 +77,6 @@ func Init() *echo.Echo {
 	e.GET("/ping", func(c echo.Context) error {
 		return c.String(http.StatusOK, "pong!")
 	})
+	e.POST("/auth/register", api.AuthRegister())
 	return e
 }
