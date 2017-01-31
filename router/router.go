@@ -41,7 +41,7 @@ func Init() *echo.Echo {
 	}))
 	// e.SetHTTPErrorHandler(handler.JSONHTTPErrorHandler)
 
-	appMw.TransactionHandler(db.Init())
+	e.Use(appMw.TransactionHandler(db.Init()))
 
 	c, err := redis.Dial("tcp", "redis:6379")
 	if err != nil {

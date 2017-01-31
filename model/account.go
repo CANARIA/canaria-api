@@ -26,10 +26,10 @@ func AccountImpl(authRegister *AuthRegister) *Account {
 	}
 }
 
-func (account *Account) AccountCreate(authRegister *AuthRegister, tx *dbr.Tx) error {
+func (account *Account) AccountCreate(tx *dbr.Tx) error {
 	_, err := tx.InsertInto("accounts").
 		Columns("user_name", "mailaddress", "password").
-		Record(authRegister).
+		Record(account).
 		Exec()
 
 	return err

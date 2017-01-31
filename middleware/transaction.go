@@ -19,10 +19,12 @@ func TransactionHandler(db *dbr.Session) echo.MiddlewareFunc {
 
 			if err := next(c); err != nil {
 				tx.Rollback()
+				println("Transction Rollback")
 				logrus.Debug("Transction Rollback: ", err)
 				return err
 			}
 
+			println("Transction Commit")
 			logrus.Debug("Transction Commit")
 			tx.Commit()
 

@@ -15,11 +15,13 @@ func AuthRegister() echo.HandlerFunc {
 		if err := c.Bind(authJson); err != nil {
 			return err
 		}
+
 		println("+++++++++++++++++++++++++++")
+		println(authJson)
 		tx := c.Get("Tx").(*dbr.Tx)
-		println("--------------------------")
+		println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 		account := model.AccountImpl(authJson)
-		if err := account.AccountCreate(authJson, tx); err != nil {
+		if err := account.AccountCreate(tx); err != nil {
 			println(err)
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
