@@ -6,9 +6,9 @@ import (
 
 const (
 	USER     string = "root"
-	PASSWORD string = "root"
+	PASSWORD string = "password"
 	DB       string = "canaria"
-	HOST     string = "127.0.0.1"
+	HOST     string = "mysql"
 	PORT     string = "3306"
 )
 
