@@ -16,10 +16,8 @@ func AuthRegister() echo.HandlerFunc {
 			return err
 		}
 
-		println("+++++++++++++++++++++++++++")
-		println(authJson)
 		tx := c.Get("Tx").(*dbr.Tx)
-		println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
 		account := model.AccountImpl(authJson)
 		if err := account.AccountCreate(tx); err != nil {
 			println(err)

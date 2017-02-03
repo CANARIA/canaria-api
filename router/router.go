@@ -1,12 +1,6 @@
 package router
 
-import
-
-// "github.com/SnippetsBucket/snicket/db"
-// "github.com/SnippetsBucket/snicket/handler"
-// sckMw "github.com/SnippetsBucket/snicket/middleware"
-
-(
+import (
 	"net/http"
 	"runtime"
 
@@ -41,6 +35,7 @@ func Init() *echo.Echo {
 	}))
 	// e.SetHTTPErrorHandler(handler.JSONHTTPErrorHandler)
 
+	// set custome middleware
 	e.Use(appMw.TransactionHandler(db.Init()))
 
 	c, err := redis.Dial("tcp", "redis:6379")
@@ -50,31 +45,24 @@ func Init() *echo.Echo {
 
 	defer c.Close()
 
-	testKey, err := redis.String(c.Do("GET", "testkey"))
-	if err != nil {
-		println("Can not get value")
-	}
-
-	println(testKey)
-
-	// set custome middleware
-	// e.Use(sckMw.TransactionHandler(db.Init()))
+	// testKey, err := redis.String(c.Do("GET", "testkey"))
+	// if err != nil {
+	// 	println("Can not get value")
+	// }
 
 	// view
 	// e.GET("/", handler.Home)
 	// e.GET("/snippet", handler.Snippet)
 	// e.GET("/create", handler.SnippetCreate)
-
-	// api
-	// v1 := e.Group("/api/v1")
-	// {
-	// 	v1.POST("/snippet/create", api.Create())
-	// 	v1.POST("/preview", api.Preview())
-	// }
-
 	e.GET("/ping", func(c echo.Context) error {
 		return c.String(http.StatusOK, "pong!")
 	})
-	e.POST("/auth/register", api.AuthRegister())
+
+	// api
+	v1 := e.Group("/api/v1")
+	{
+		v1.POST("/auth/register", api.AuthRegister())
+	}
+
 	return e
 }

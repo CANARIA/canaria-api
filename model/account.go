@@ -3,6 +3,8 @@ package model
 import (
 	"time"
 
+	"github.com/CANARIA/canaria-api/util"
+
 	"github.com/gocraft/dbr"
 )
 
@@ -22,7 +24,7 @@ func AccountImpl(authRegister *AuthRegister) *Account {
 		UserId:      0,
 		UserName:    authRegister.UserName,
 		MailAddress: authRegister.MailAddress,
-		Password:    authRegister.Password,
+		Password:    util.ToHash(authRegister.Password),
 	}
 }
 
