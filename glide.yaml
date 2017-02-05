@@ -23,4 +23,5 @@ import:
   - package: golang.org/x/crypto
     subpackages:
     - ocsp
+  - package: github.com/satori/go.uuid
 
