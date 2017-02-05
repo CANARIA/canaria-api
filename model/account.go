@@ -9,7 +9,7 @@ import (
 )
 
 type Account struct {
-	UserId      int64     `db:"user_id";gorm:"AUTO_INCREMENT;primary_key"`
+	UserId      int64     `db:"user_id"`
 	UserName    string    `db:"user_name"`
 	MailAddress string    `db:"mailaddress"`
 	Password    string    `db:"password"`

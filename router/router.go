@@ -26,6 +26,8 @@ func Init() *echo.Echo {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
+	e.Logger.Debug()
+
 	e.Use(mw.Logger())
 	e.Use(mw.Recover())
 	e.Use(mw.Gzip())
@@ -61,6 +63,7 @@ func Init() *echo.Echo {
 	// api
 	v1 := e.Group("/api/v1")
 	{
+		v1.POST("/auth/preregister", api.PreRegister())
 		v1.POST("/auth/register", api.AuthRegister())
 	}
 
