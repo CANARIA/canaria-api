@@ -48,6 +48,16 @@ func PreRegister() echo.HandlerFunc {
 	}
 }
 
+func CheckToken() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		authJson := new(model.AuthRegister)
+		if err := c.Bind(authJson); err != nil {
+			return err
+		}
+
+	}
+}
+
 func AuthRegister() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
@@ -57,6 +67,10 @@ func AuthRegister() echo.HandlerFunc {
 		}
 
 		tx := c.Get("Tx").(*dbr.Tx)
+
+		if !authJson.ValidPreAccountToken(tx) {
+			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
+		}
 
 		account := model.AccountImpl(authJson)
 		if err := account.AccountCreate(tx); err != nil {

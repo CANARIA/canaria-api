@@ -7,6 +7,8 @@ import (
 	"github.com/gocraft/dbr"
 )
 
+var preAccount PreAccount
+
 type PreAccount struct {
 	Id          int64     `db:"id"`
 	UrlToken    string    `db:"url_token"`
@@ -36,4 +38,17 @@ func (preAccount *PreAccount) PreAccountCreate(tx *dbr.Tx) error {
 func BuildRegisterUrl(token string) string {
 	url := "http://" + config.GetHost() + "/" + "auth/register?register_token=" + token
 	return url
+}
+
+func (authRegister *AuthRegister) ValidPreAccountToken(tx *dbr.Tx) bool {
+	// TODO: errorを返したい
+	tx.Select("*").
+		From("pre_accounts").
+		Where("url_token = ? AND is_registered = ? AND created_at = > now() - interval 24 hour", authRegister.UrlToken, 0).
+		Load(&preAccount)
+
+	if (PreAccount{}) == preAccount {
+		return false
+	}
+	return true
 }
