@@ -19,11 +19,11 @@ type Account struct {
 	IsDeleted   bool      `db:"is_deleted"`
 }
 
-func AccountImpl(authRegister *AuthRegister) *Account {
+func AccountImpl(authRegister *AuthRegister, preAccount *PreAccount) *Account {
 	return &Account{
 		UserId:      0,
 		UserName:    authRegister.UserName,
-		MailAddress: authRegister.MailAddress,
+		MailAddress: preAccount.MailAddress,
 		Password:    util.ToHash(authRegister.Password),
 	}
 }

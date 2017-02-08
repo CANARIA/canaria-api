@@ -3,6 +3,8 @@ package api
 import (
 	"net/http"
 
+	"fmt"
+
 	"github.com/CANARIA/canaria-api/mail"
 	"github.com/CANARIA/canaria-api/message"
 	"github.com/CANARIA/canaria-api/model"
@@ -77,15 +79,28 @@ func AuthRegister() echo.HandlerFunc {
 
 		tx := c.Get("Tx").(*dbr.Tx)
 
-		if _, err := auth.ValidPreAccountToken(tx); err != nil {
+		preAccount, err := auth.ValidPreAccountToken(tx)
+		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
 		}
 
-		account := model.AccountImpl(authJson)
+		// アカウントの作成
+		account := model.AccountImpl(authJson, preAccount)
 		if err := account.AccountCreate(tx); err != nil {
 			println(err)
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
+		fmt.Println("======================================")
+		fmt.Println(preAccount)
+		fmt.Println(preAccount.MailAddress)
+		fmt.Println("======================================")
+		if err := model.AcctivateAccount(tx, preAccount); err != nil {
+			println(err)
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+
+		// Session発行
+		// TODO: 登録確認メール送信
 
 		return c.JSON(http.StatusOK, authJson)
 	}

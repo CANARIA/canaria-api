@@ -49,7 +49,16 @@ func BuildRegisterUrl(token string) string {
 	return url
 }
 
-func (auth *Auth) ValidPreAccountToken(tx *dbr.Tx) (PreAccount, error) {
+func AcctivateAccount(tx *dbr.Tx, preAccount *PreAccount) error {
+	_, err := tx.Update("pre_accounts").
+		Set("is_registered", true).
+		Where("url_token = ? AND mailaddress = ?", &preAccount.UrlToken, &preAccount.MailAddress).
+		Exec()
+
+	return err
+}
+
+func (auth *Auth) ValidPreAccountToken(tx *dbr.Tx) (*PreAccount, error) {
 
 	tx.Select("*").
 		From("pre_accounts").
@@ -57,7 +66,7 @@ func (auth *Auth) ValidPreAccountToken(tx *dbr.Tx) (PreAccount, error) {
 		Load(&preAccount)
 
 	if (PreAccount{}) == preAccount {
-		return PreAccount{}, errors.New("invalid token: " + auth.UrlToken)
+		return &PreAccount{}, errors.New("invalid token: " + auth.UrlToken)
 	}
-	return preAccount, nil
+	return &preAccount, nil
 }
