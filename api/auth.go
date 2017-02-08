@@ -50,11 +50,19 @@ func PreRegister() echo.HandlerFunc {
 
 func CheckToken() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		authJson := new(model.AuthRegister)
-		if err := c.Bind(authJson); err != nil {
+		checkTokenJson := new(model.CheckToken)
+		if err := c.Bind(checkTokenJson); err != nil {
 			return err
 		}
+		auth := model.Auth{UrlToken: checkTokenJson.UrlToken}
 
+		tx := c.Get("Tx").(*dbr.Tx)
+
+		if _, err := auth.ValidPreAccountToken(tx); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
+		}
+
+		return c.JSON(http.StatusOK, "ok")
 	}
 }
 
@@ -65,10 +73,11 @@ func AuthRegister() echo.HandlerFunc {
 		if err := c.Bind(authJson); err != nil {
 			return err
 		}
+		auth := model.Auth{UrlToken: authJson.UrlToken}
 
 		tx := c.Get("Tx").(*dbr.Tx)
 
-		if !authJson.ValidPreAccountToken(tx) {
+		if _, err := auth.ValidPreAccountToken(tx); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
 		}
 

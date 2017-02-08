@@ -63,6 +63,7 @@ func Init() *echo.Echo {
 	// api
 	v1 := e.Group("/api/v1")
 	{
+		v1.POST("/auth/checktoken", api.CheckToken())
 		v1.POST("/auth/preregister", api.PreRegister())
 		v1.POST("/auth/register", api.AuthRegister())
 	}

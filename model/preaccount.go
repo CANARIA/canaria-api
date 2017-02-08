@@ -3,11 +3,20 @@ package model
 import (
 	"time"
 
+	"errors"
+
 	"github.com/CANARIA/canaria-api/config"
 	"github.com/gocraft/dbr"
 )
 
 var preAccount PreAccount
+
+type Auth struct {
+	UrlToken    string
+	MailAddress string
+}
+
+var auth Auth
 
 type PreAccount struct {
 	Id          int64     `db:"id"`
@@ -40,15 +49,15 @@ func BuildRegisterUrl(token string) string {
 	return url
 }
 
-func (authRegister *AuthRegister) ValidPreAccountToken(tx *dbr.Tx) bool {
-	// TODO: errorを返したい
+func (auth *Auth) ValidPreAccountToken(tx *dbr.Tx) (PreAccount, error) {
+
 	tx.Select("*").
 		From("pre_accounts").
-		Where("url_token = ? AND is_registered = ? AND created_at = > now() - interval 24 hour", authRegister.UrlToken, 0).
+		Where("url_token = ? AND is_registered = ? AND created_at > now() - interval 24 hour", auth.UrlToken, 0).
 		Load(&preAccount)
 
 	if (PreAccount{}) == preAccount {
-		return false
+		return PreAccount{}, errors.New("invalid token: " + auth.UrlToken)
 	}
-	return true
+	return preAccount, nil
 }
