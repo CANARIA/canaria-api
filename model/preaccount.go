@@ -49,10 +49,10 @@ func BuildRegisterUrl(token string) string {
 	return url
 }
 
-func AcctivateAccount(tx *dbr.Tx, preAccount *PreAccount) error {
+func AcctivateAccount(tx *dbr.Tx, auth *Auth) error {
 	_, err := tx.Update("pre_accounts").
 		Set("is_registered", true).
-		Where("url_token = ? AND mailaddress = ?", &preAccount.UrlToken, &preAccount.MailAddress).
+		Where("url_token = ? AND mailaddress = ?", auth.UrlToken, auth.MailAddress).
 		Exec()
 
 	return err
