@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/CANARIA/canaria-api/config"
+	"github.com/CANARIA/canaria-api/message"
 	"github.com/CANARIA/canaria-api/model"
 )
 
@@ -20,14 +21,23 @@ type (
 
 func BuildPreRegisterMail(preAccount model.PreAccount, url string) *Mail {
 
-	body := config.PRE_REGISTER_MAIL_BODY + url
+	body := message.PRE_REGISTER_MAIL_BODY + url
 	return &Mail{
 		To:      preAccount.MailAddress,
 		From:    config.GetMailAddress(),
-		Subject: "【仮登録】会員登録用URLのお知らせ",
+		Subject: message.PREREGISTER_SUBJECT,
 		Body:    body,
 	}
 
+}
+
+func BuildRegisteredMail(auth model.Auth) *Mail {
+	return &Mail{
+		To:      auth.MailAddress,
+		From:    config.GetMailAddress(),
+		Subject: message.REGISTER_SUBJECT,
+		Body:    message.REGISTER_MAIL_BODY,
+	}
 }
 
 func (mail *Mail) Send() {

@@ -94,8 +94,10 @@ func AuthRegister() echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 
-		// Session発行
-		// TODO: 登録確認メール送信
+		// TODO: Session発行
+		// 登録確認メール送信
+		mail := mail.BuildRegisteredMail(auth)
+		mail.Send()
 
 		return c.JSON(http.StatusOK, authJson)
 	}

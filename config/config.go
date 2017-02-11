@@ -6,14 +6,11 @@ import (
 
 // TODO: yamlに移動したい
 const (
-	USER                   string = "root"
-	PASSWORD               string = "password"
-	DB                     string = "canaria"
-	HOST                   string = "mysql"
-	PORT                   string = "3306"
-	PRE_REGISTER_MAIL_BODY string = `Canariaにご登録ありがとうございます。
-  24時間以内に下記のURLからご登録下さい。
-  `
+	USER     string = "root"
+	PASSWORD string = "password"
+	DB       string = "canaria"
+	HOST     string = "mysql"
+	PORT     string = "3306"
 )
 
 type Config struct {
