@@ -4,10 +4,21 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
+// TODO: yamlに移動したい
+const (
+	USER     string = "root"
+	PASSWORD string = "password"
+	DB       string = "canaria"
+	HOST     string = "mysql"
+	PORT     string = "3306"
+)
+
 type Config struct {
-	Env      string `envconfig:"ENV" default:"local"`
-	Port     string `envconfig:"PORT" default:":5000"`
-	LogLevel string `envconfig:"LOG_LEVEL" default:"info"`
+	Env         string `envconfig:"ENV" default:"local"`
+	MailAddress string `envconfig:"MAILADDRESS" default:"canaria-dev@gmail.com"`
+	LogLevel    string `envconfig:"LOG_LEVEL" default:"info"`
+	Host        string `envconfig:"HOST" default:"localhost"`
+	Port        string `envconfig:"PORT" default:":5000"`
 }
 
 var conf = &Config{}
@@ -20,10 +31,18 @@ func GetEnv() string {
 	return conf.Env
 }
 
-func GetPort() string {
-	return conf.Port
+func GetMailAddress() string {
+	return conf.MailAddress
 }
 
 func GetLogLevel() string {
 	return conf.LogLevel
+}
+
+func GetHost() string {
+	return conf.Host
+}
+
+func GetPort() string {
+	return conf.Port
 }

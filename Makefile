@@ -7,3 +7,6 @@ migrate:
 
 fmt:
 	go fmt $(shell go list ./... | grep -v vendor)
+
+dev run:
+	docker-compose restart api && docker-compose logs -ft api
