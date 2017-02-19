@@ -1,12 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/CANARIA/canaria-api/mail"
 	"github.com/CANARIA/canaria-api/message"
 	"github.com/CANARIA/canaria-api/model"
 	"github.com/CANARIA/canaria-api/util"
+	jwt "github.com/dgrijalva/jwt-go"
 
 	"github.com/gocraft/dbr"
 	"github.com/labstack/echo"
@@ -101,5 +103,41 @@ func AuthRegister() echo.HandlerFunc {
 		mail.Send()
 
 		return c.JSON(http.StatusOK, authJson)
+	}
+}
+
+func Login() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var userInfo model.UserInfo
+
+		loginClaim := new(model.LoginClaim)
+		if err := c.Bind(loginClaim); err != nil {
+			return err
+		}
+		tx := c.Get("Tx").(*dbr.Tx)
+
+		fmt.Println("user_name => ? / password => ?", loginClaim.UserName, loginClaim.Password)
+
+		tx.Select("a.user_id, a.user_name, p.display_name, a.mailaddress, p.avatar, a.roll").
+			From("accounts a").
+			Join("profiles p", "a.user_id = p.user_id").
+			Where("a.user_name = ? AND a.password = ?", loginClaim.UserName, loginClaim.Password).
+			Load(&userInfo)
+
+		fmt.Println("userInfo => ", userInfo)
+
+		if (model.UserInfo{}) != userInfo {
+			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_LOGIN_CLAIM)
+		}
+
+		// TODO: token生成は共通化する
+		token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &userInfo)
+		// Secretで文字列にする. このSecretはサーバだけが知っている
+		tokenstring, err := token.SignedString([]byte("foobar"))
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		return c.JSON(http.StatusOK, tokenstring)
 	}
 }
