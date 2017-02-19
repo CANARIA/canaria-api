@@ -19,6 +19,7 @@ CREATE TABLE accounts (
 CREATE TABLE profiles (
   display_name varchar(255) NOT NULL,
   bio text,
+  avatar varchar(255),
   url varchar(255),
   user_id bigint NOT NULL,
   created_at datetime NOT NULL DEFAULT now(),
