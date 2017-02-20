@@ -1,5 +1,5 @@
-hash: c0dc9dc2b34d8cb056c3ab370ab81fdb8f3171cc076669dff8c3df7678fe657f
-updated: 2017-02-05T22:21:39.255401771+09:00
+hash: c486e94ff05896869880a67edbcd160c1280616ce4ab104ba9369ced66374586
+updated: 2017-02-20T18:03:12.044578876+09:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: a601269ab70c205d26370c16f7c81e9017c14e04
@@ -18,6 +18,10 @@ imports:
   version: 10fa49bf1ee63a0f822283ef9805d818f9e84742
   subpackages:
   - dialect
+- name: github.com/jinzhu/gorm
+  version: a3b8b332edf4ac4360a4f4cb95979000bd0aef8c
+  subpackages:
+  - inflection
 - name: github.com/kelseyhightower/envconfig
   version: 4069f29f08928c54bcb1fdf632b31b1bb54b4fdb
 - name: github.com/labstack/echo
