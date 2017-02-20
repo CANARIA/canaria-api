@@ -5,7 +5,9 @@ import (
 
 	"github.com/CANARIA/canaria-api/util"
 
-	"github.com/gocraft/dbr"
+	"fmt"
+
+	"github.com/jinzhu/gorm"
 )
 
 type Account struct {
@@ -28,11 +30,16 @@ func AccountImpl(authRegister *AuthRegister) *Account {
 	}
 }
 
-func (account *Account) AccountCreate(tx *dbr.Tx) error {
-	_, err := tx.InsertInto("accounts").
-		Columns("user_name", "mailaddress", "password").
-		Record(account).
-		Exec()
+func (account *Account) AccountCreate(tx *gorm.DB) error {
 
-	return err
+	if res := tx.Create(account); res.Error != nil {
+		return fmt.Errorf("failed Account create: %s", res.Error.Error())
+	}
+
+	// _, err := tx.InsertInto("accounts").
+	// 	Columns("user_name", "mailaddress", "password").
+	// 	Record(account).
+	// 	Exec()
+
+	return nil
 }

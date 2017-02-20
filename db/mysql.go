@@ -4,27 +4,28 @@ import (
 	"github.com/CANARIA/canaria-api/config"
 	"github.com/Sirupsen/logrus"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gocraft/dbr"
+	"github.com/jinzhu/gorm"
 )
 
-func Init() *dbr.Session {
+func Init() *gorm.DB {
 
 	session := getSession()
 
 	return session
+
 }
 
-func getSession() *dbr.Session {
+func getSession() *gorm.DB {
 
-	db, err := dbr.Open("mysql",
-		config.USER+":"+config.PASSWORD+"@tcp("+config.HOST+":"+config.PORT+")/"+config.DB,
-		nil)
+	db, err := gorm.Open("mysql",
+		config.USER+":"+config.PASSWORD+"@tcp("+config.HOST+":"+config.PORT+")/"+config.DB)
 
 	if err != nil {
 		logrus.Error(err)
 	} else {
-		session := db.NewSession(nil)
-		return session
+		db.LogMode(true)
+		db.DB().SetMaxOpenConns(5)
+		db.DB().SetMaxIdleConns(5)
 	}
-	return nil
+	return db
 }

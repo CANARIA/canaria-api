@@ -10,7 +10,7 @@ import (
 	"github.com/CANARIA/canaria-api/util"
 	jwt "github.com/dgrijalva/jwt-go"
 
-	"github.com/gocraft/dbr"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 )
 
@@ -23,12 +23,12 @@ func PreRegister() echo.HandlerFunc {
 			return err
 		}
 
-		tx := c.Get("Tx").(*dbr.Tx)
+		tx := c.Get("Tx").(*gorm.DB)
 
 		tx.Select("*").
-			From("accounts").
+			Table("accounts").
 			Where("mailaddress = ?", preJson.MailAddress).
-			Load(&account)
+			Find(&account)
 
 		if (model.Account{}) != account {
 			return echo.NewHTTPError(http.StatusBadRequest, message.REGISTERD_MAILADDRESS)
@@ -59,7 +59,7 @@ func CheckToken() echo.HandlerFunc {
 		}
 		auth := model.Auth{UrlToken: checkTokenJson.UrlToken}
 
-		tx := c.Get("Tx").(*dbr.Tx)
+		tx := c.Get("Tx").(*gorm.DB)
 
 		if _, err := auth.ValidPreAccountToken(tx); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
@@ -78,7 +78,7 @@ func AuthRegister() echo.HandlerFunc {
 		}
 		auth := model.Auth{UrlToken: authJson.UrlToken, MailAddress: authJson.MailAddress}
 
-		tx := c.Get("Tx").(*dbr.Tx)
+		tx := c.Get("Tx").(*gorm.DB)
 
 		if _, err := auth.ValidPreAccountToken(tx); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
@@ -114,15 +114,13 @@ func Login() echo.HandlerFunc {
 		if err := c.Bind(loginClaim); err != nil {
 			return err
 		}
-		tx := c.Get("Tx").(*dbr.Tx)
-
-		fmt.Println("user_name => ? / password => ?", loginClaim.UserName, loginClaim.Password)
+		tx := c.Get("Tx").(*gorm.DB)
 
 		tx.Select("a.user_id, a.user_name, p.display_name, a.mailaddress, p.avatar, a.roll").
-			From("accounts a").
-			Join("profiles p", "a.user_id = p.user_id").
+			Table("accounts a").
+			Joins("INNER JOIN profiles p ON a.user_id = p.user_id").
 			Where("a.user_name = ? AND a.password = ?", loginClaim.UserName, loginClaim.Password).
-			Load(&userInfo)
+			Find(&userInfo)
 
 		fmt.Println("userInfo => ", userInfo)
 

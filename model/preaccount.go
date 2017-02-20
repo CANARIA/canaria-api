@@ -1,12 +1,13 @@
 package model
 
 import (
+	"fmt"
 	"time"
 
 	"errors"
 
 	"github.com/CANARIA/canaria-api/config"
-	"github.com/gocraft/dbr"
+	"github.com/jinzhu/gorm"
 )
 
 var preAccount PreAccount
@@ -35,13 +36,16 @@ func PreAccountImpl(preRegister *PreRegister, token string) *PreAccount {
 	}
 }
 
-func (preAccount *PreAccount) PreAccountCreate(tx *dbr.Tx) error {
-	_, err := tx.InsertInto("pre_accounts").
-		Columns("url_token", "created_at", "mailaddress").
-		Record(preAccount).
-		Exec()
+func (preAccount *PreAccount) PreAccountCreate(tx *gorm.DB) error {
+	// _, err := tx.InsertInto("pre_accounts").
+	// 	Columns("url_token", "created_at", "mailaddress").
+	// 	Record(preAccount).
+	// 	Exec()
+	if res := tx.Create(preAccount); res.Error != nil {
+		return fmt.Errorf("failed PreAccount create: %s", res.Error.Error())
+	}
 
-	return err
+	return nil
 }
 
 func BuildRegisterUrl(token string) string {
@@ -49,21 +53,32 @@ func BuildRegisterUrl(token string) string {
 	return url
 }
 
-func AcctivateAccount(tx *dbr.Tx, auth *Auth) error {
-	_, err := tx.Update("pre_accounts").
-		Set("is_registered", true).
-		Where("url_token = ? AND mailaddress = ?", auth.UrlToken, auth.MailAddress).
-		Exec()
+func AcctivateAccount(tx *gorm.DB, auth *Auth) error {
+	// _, err := tx.Update("pre_accounts").
+	// 	Set("is_registered", true).
+	// 	Where("url_token = ? AND mailaddress = ?", auth.UrlToken, auth.MailAddress).
+	// 	Exec()
 
-	return err
+	preAccount := PreAccount{IsRegisterd: true}
+
+	res := tx.
+		Model(&preAccount).
+		Where("url_token = ? AND mailaddress = ?", auth.UrlToken, auth.MailAddress).
+		Update("is_registered")
+
+	if res.Error != nil {
+		return fmt.Errorf("failed PreAccount update: %s", res.Error.Error())
+	}
+
+	return nil
 }
 
-func (auth *Auth) ValidPreAccountToken(tx *dbr.Tx) (*PreAccount, error) {
+func (auth *Auth) ValidPreAccountToken(tx *gorm.DB) (*PreAccount, error) {
 
 	tx.Select("*").
-		From("pre_accounts").
+		Table("pre_accounts").
 		Where("url_token = ? AND is_registered = ? AND created_at > now() - interval 24 hour", auth.UrlToken, 0).
-		Load(&preAccount)
+		Find(&preAccount)
 
 	if (PreAccount{}) == preAccount {
 		return &PreAccount{}, errors.New("invalid token: " + auth.UrlToken)
