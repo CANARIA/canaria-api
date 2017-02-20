@@ -116,7 +116,7 @@ func Login() echo.HandlerFunc {
 		}
 		tx := c.Get("Tx").(*gorm.DB)
 
-		tx.Select("a.user_id, a.user_name, p.display_name, a.mailaddress, p.avatar, a.roll").
+		res := tx.Select("a.user_id, a.user_name, p.display_name, a.mailaddress, p.avatar, a.roll").
 			Table("accounts a").
 			Joins("INNER JOIN profiles p ON a.user_id = p.user_id").
 			Where("a.user_name = ? AND a.password = ?", loginClaim.UserName, loginClaim.Password).
@@ -124,14 +124,15 @@ func Login() echo.HandlerFunc {
 
 		fmt.Println("userInfo => ", userInfo)
 
-		if (model.UserInfo{}) != userInfo {
+		if res.Error != nil {
+			fmt.Errorf("LoginClaim{err=%s}", res.Error.Error())
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_LOGIN_CLAIM)
 		}
 
 		// TODO: token生成は共通化する
 		token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &userInfo)
 		// Secretで文字列にする. このSecretはサーバだけが知っている
-		tokenstring, err := token.SignedString([]byte("foobar"))
+		tokenstring, err := token.SignedString([]byte("ServerSecretKey"))
 		if err != nil {
 			fmt.Println(err)
 		}
