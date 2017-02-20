@@ -45,7 +45,7 @@ func (preAccount *PreAccount) PreAccountCreate(tx *dbr.Tx) error {
 }
 
 func BuildRegisterUrl(token string) string {
-	url := "http://" + config.GetHost() + "/" + "auth/register?register_token=" + token
+	url := "http://" + config.GetHost() + "/" + "register?register_token=" + token
 	return url
 }
 
