@@ -141,7 +141,7 @@ func Login() echo.HandlerFunc {
 			fmt.Println(err)
 		}
 
-		respUserInfo := convertToRespUserInfo(userInfo)
+		respUserInfo := ConvertToRespUserInfo(userInfo)
 
 		c.Response().Header().Set("access_token", accessToken)
 		c.Response().Header().Set("jwt", tokenstring)
@@ -151,7 +151,7 @@ func Login() echo.HandlerFunc {
 }
 
 // トークン付きユーザー情報からクライアントに必要な情報だけをコンバート
-func convertToRespUserInfo(userInfoWithAccessToken model.UserInfo) *model.RespUserInfo {
+func ConvertToRespUserInfo(userInfoWithAccessToken model.UserInfo) *model.RespUserInfo {
 	return &model.RespUserInfo{
 		UserID:      userInfoWithAccessToken.UserID,
 		UserName:    userInfoWithAccessToken.UserName,
