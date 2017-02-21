@@ -1,5 +1,5 @@
-hash: c0dc9dc2b34d8cb056c3ab370ab81fdb8f3171cc076669dff8c3df7678fe657f
-updated: 2017-02-05T22:21:39.255401771+09:00
+hash: 5d8b5b44fddabce0c1f8de0c02703d6d3c29aeba48d939ef764599ec352c2e1e
+updated: 2017-02-21T01:57:49.564524989+09:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: a601269ab70c205d26370c16f7c81e9017c14e04
@@ -14,10 +14,10 @@ imports:
   - redis
 - name: github.com/go-sql-driver/mysql
   version: 2e00b5cd70399450106cec6431c2e2ce3cae5034
-- name: github.com/gocraft/dbr
-  version: 10fa49bf1ee63a0f822283ef9805d818f9e84742
-  subpackages:
-  - dialect
+- name: github.com/jinzhu/gorm
+  version: a3b8b332edf4ac4360a4f4cb95979000bd0aef8c
+- name: github.com/jinzhu/inflection
+  version: 1c35d901db3da928c72a72d8458480cc9ade058f
 - name: github.com/kelseyhightower/envconfig
   version: 4069f29f08928c54bcb1fdf632b31b1bb54b4fdb
 - name: github.com/labstack/echo

@@ -10,7 +10,7 @@ import (
 	"github.com/CANARIA/canaria-api/util"
 	jwt "github.com/dgrijalva/jwt-go"
 
-	"github.com/gocraft/dbr"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 )
 
@@ -23,12 +23,12 @@ func PreRegister() echo.HandlerFunc {
 			return err
 		}
 
-		tx := c.Get("Tx").(*dbr.Tx)
+		tx := c.Get("Tx").(*gorm.DB)
 
 		tx.Select("*").
-			From("accounts").
+			Table("accounts").
 			Where("mailaddress = ?", preJson.MailAddress).
-			Load(&account)
+			Find(&account)
 
 		if (model.Account{}) != account {
 			return echo.NewHTTPError(http.StatusBadRequest, message.REGISTERD_MAILADDRESS)
@@ -59,7 +59,7 @@ func CheckToken() echo.HandlerFunc {
 		}
 		auth := model.Auth{UrlToken: checkTokenJson.UrlToken}
 
-		tx := c.Get("Tx").(*dbr.Tx)
+		tx := c.Get("Tx").(*gorm.DB)
 
 		if _, err := auth.ValidPreAccountToken(tx); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
@@ -78,7 +78,7 @@ func AuthRegister() echo.HandlerFunc {
 		}
 		auth := model.Auth{UrlToken: authJson.UrlToken, MailAddress: authJson.MailAddress}
 
-		tx := c.Get("Tx").(*dbr.Tx)
+		tx := c.Get("Tx").(*gorm.DB)
 
 		if _, err := auth.ValidPreAccountToken(tx); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
@@ -109,35 +109,55 @@ func AuthRegister() echo.HandlerFunc {
 func Login() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var userInfo model.UserInfo
+		// headerから取得
+		accessToken := c.Request().Header.Get("access_token")
 
 		loginClaim := new(model.LoginClaim)
 		if err := c.Bind(loginClaim); err != nil {
 			return err
 		}
-		tx := c.Get("Tx").(*dbr.Tx)
+		tx := c.Get("Tx").(*gorm.DB)
 
-		fmt.Println("user_name => ? / password => ?", loginClaim.UserName, loginClaim.Password)
-
-		tx.Select("a.user_id, a.user_name, p.display_name, a.mailaddress, p.avatar, a.roll").
-			From("accounts a").
-			Join("profiles p", "a.user_id = p.user_id").
+		res := tx.Select("*").
+			Table("accounts a").
+			Joins("INNER JOIN profiles p ON a.user_id = p.user_id").
 			Where("a.user_name = ? AND a.password = ?", loginClaim.UserName, loginClaim.Password).
-			Load(&userInfo)
+			Find(&userInfo)
 
+		userInfo.AccessToken = accessToken
 		fmt.Println("userInfo => ", userInfo)
 
-		if (model.UserInfo{}) != userInfo {
+		if res.Error != nil {
+			fmt.Errorf("LoginClaim{err=%s}", res.Error.Error())
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_LOGIN_CLAIM)
 		}
 
 		// TODO: token生成は共通化する
+		// アクセストークンとユーザ情報を一緒にトークン化
 		token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &userInfo)
 		// Secretで文字列にする. このSecretはサーバだけが知っている
-		tokenstring, err := token.SignedString([]byte("foobar"))
+		tokenstring, err := token.SignedString([]byte("ServerSecretKey"))
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		return c.JSON(http.StatusOK, tokenstring)
+		respUserInfo := ConvertToRespUserInfo(userInfo)
+
+		c.Response().Header().Set("access_token", accessToken)
+		c.Response().Header().Set("jwt", tokenstring)
+
+		return c.JSON(http.StatusOK, &respUserInfo)
+	}
+}
+
+// トークン付きユーザー情報からクライアントに必要な情報だけをコンバート
+func ConvertToRespUserInfo(userInfoWithAccessToken model.UserInfo) *model.RespUserInfo {
+	return &model.RespUserInfo{
+		UserID:      userInfoWithAccessToken.UserID,
+		UserName:    userInfoWithAccessToken.UserName,
+		DisplayName: userInfoWithAccessToken.DisplayName,
+		MailAddress: userInfoWithAccessToken.MailAddress,
+		Avatar:      userInfoWithAccessToken.Avatar,
+		Roll:        userInfoWithAccessToken.Roll,
 	}
 }

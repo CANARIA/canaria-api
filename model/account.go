@@ -5,18 +5,20 @@ import (
 
 	"github.com/CANARIA/canaria-api/util"
 
-	"github.com/gocraft/dbr"
+	"fmt"
+
+	"github.com/jinzhu/gorm"
 )
 
 type Account struct {
-	UserId      int64     `db:"user_id"`
-	UserName    string    `db:"user_name"`
-	MailAddress string    `db:"mailaddress"`
-	Password    string    `db:"password"`
-	Roll        int8      `db:"roll"`
-	CreatedAt   time.Time `db:"created_at"`
-	UpdatedAt   time.Time `db:"updated_at"`
-	IsDeleted   bool      `db:"is_deleted"`
+	UserId      int64     `gorm:"column:user_id"`
+	UserName    string    `gorm:"column:user_name"`
+	MailAddress string    `gorm:"column:mailaddress"`
+	Password    string    `gorm:"column:password"`
+	Roll        int8      `gorm:"column:roll"`
+	CreatedAt   time.Time `gorm:"column:created_at"`
+	UpdatedAt   time.Time `gorm:"column:updated_at"`
+	IsDeleted   bool      `gorm:"column:is_deleted"`
 }
 
 func AccountImpl(authRegister *AuthRegister) *Account {
@@ -28,11 +30,16 @@ func AccountImpl(authRegister *AuthRegister) *Account {
 	}
 }
 
-func (account *Account) AccountCreate(tx *dbr.Tx) error {
-	_, err := tx.InsertInto("accounts").
-		Columns("user_name", "mailaddress", "password").
-		Record(account).
-		Exec()
+func (account *Account) AccountCreate(tx *gorm.DB) error {
 
-	return err
+	if res := tx.Create(account); res.Error != nil {
+		return fmt.Errorf("failed Account create: %s", res.Error.Error())
+	}
+
+	// _, err := tx.InsertInto("accounts").
+	// 	Columns("user_name", "mailaddress", "password").
+	// 	Record(account).
+	// 	Exec()
+
+	return nil
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/gocraft/dbr"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 )
 
@@ -12,10 +12,10 @@ const (
 	TxKey = "Tx"
 )
 
-func TransactionHandler(db *dbr.Session) echo.MiddlewareFunc {
+func TransactionHandler(db *gorm.DB) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return echo.HandlerFunc(func(c echo.Context) error {
-			tx, _ := db.Begin()
+			tx := db.Begin()
 			logrus.Debug("Transaction Start")
 			fmt.Println("Transaction Start")
 
