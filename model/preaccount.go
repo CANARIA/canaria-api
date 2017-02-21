@@ -20,11 +20,11 @@ type Auth struct {
 var auth Auth
 
 type PreAccount struct {
-	Id          int64     `db:"id"`
-	UrlToken    string    `db:"url_token"`
-	CreatedAt   time.Time `db:"created_at"`
-	MailAddress string    `db:"mailaddress"`
-	IsRegisterd bool      `db:"is_registered"`
+	Id          int64     `gorm:"column:id"`
+	UrlToken    string    `gorm:"column:url_token"`
+	CreatedAt   time.Time `gorm:"column:created_at"`
+	MailAddress string    `gorm:"column:mailaddress"`
+	IsRegisterd bool      `gorm:"column:is_registered"`
 }
 
 func PreAccountImpl(preRegister *PreRegister, token string) *PreAccount {

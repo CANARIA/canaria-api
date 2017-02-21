@@ -11,14 +11,14 @@ import (
 )
 
 type Account struct {
-	UserId      int64     `db:"user_id"`
-	UserName    string    `db:"user_name"`
-	MailAddress string    `db:"mailaddress"`
-	Password    string    `db:"password"`
-	Roll        int8      `db:"roll"`
-	CreatedAt   time.Time `db:"created_at"`
-	UpdatedAt   time.Time `db:"updated_at"`
-	IsDeleted   bool      `db:"is_deleted"`
+	UserId      int64     `gorm:"column:user_id"`
+	UserName    string    `gorm:"column:user_name"`
+	MailAddress string    `gorm:"column:mailaddress"`
+	Password    string    `gorm:"column:password"`
+	Roll        int8      `gorm:"column:roll"`
+	CreatedAt   time.Time `gorm:"column:created_at"`
+	UpdatedAt   time.Time `gorm:"column:updated_at"`
+	IsDeleted   bool      `gorm:"column:is_deleted"`
 }
 
 func AccountImpl(authRegister *AuthRegister) *Account {
