@@ -109,6 +109,8 @@ func AuthRegister() echo.HandlerFunc {
 func Login() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var userInfo model.UserInfo
+		// headerから取得
+		accessToken := c.Request().Header.Get("access_token")
 
 		loginClaim := new(model.LoginClaim)
 		if err := c.Bind(loginClaim); err != nil {
@@ -116,12 +118,13 @@ func Login() echo.HandlerFunc {
 		}
 		tx := c.Get("Tx").(*gorm.DB)
 
-		res := tx.Select("a.user_id, a.user_name, p.display_name, a.mailaddress, p.avatar, a.roll").
+		res := tx.Select("*").
 			Table("accounts a").
 			Joins("INNER JOIN profiles p ON a.user_id = p.user_id").
 			Where("a.user_name = ? AND a.password = ?", loginClaim.UserName, loginClaim.Password).
 			Find(&userInfo)
 
+		userInfo.AccessToken = accessToken
 		fmt.Println("userInfo => ", userInfo)
 
 		if res.Error != nil {
@@ -130,6 +133,7 @@ func Login() echo.HandlerFunc {
 		}
 
 		// TODO: token生成は共通化する
+		// アクセストークンとユーザ情報を一緒にトークン化
 		token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &userInfo)
 		// Secretで文字列にする. このSecretはサーバだけが知っている
 		tokenstring, err := token.SignedString([]byte("ServerSecretKey"))
@@ -137,6 +141,23 @@ func Login() echo.HandlerFunc {
 			fmt.Println(err)
 		}
 
-		return c.JSON(http.StatusOK, tokenstring)
+		respUserInfo := convertToRespUserInfo(userInfo)
+
+		c.Response().Header().Set("access_token", accessToken)
+		c.Response().Header().Set("jwt", tokenstring)
+
+		return c.JSON(http.StatusOK, &respUserInfo)
+	}
+}
+
+// トークン付きユーザー情報からクライアントに必要な情報だけをコンバート
+func convertToRespUserInfo(userInfoWithAccessToken model.UserInfo) *model.RespUserInfo {
+	return &model.RespUserInfo{
+		UserID:      userInfoWithAccessToken.UserID,
+		UserName:    userInfoWithAccessToken.UserName,
+		DisplayName: userInfoWithAccessToken.DisplayName,
+		MailAddress: userInfoWithAccessToken.MailAddress,
+		Avatar:      userInfoWithAccessToken.Avatar,
+		Roll:        userInfoWithAccessToken.Roll,
 	}
 }
