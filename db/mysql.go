@@ -18,7 +18,7 @@ func Init() *gorm.DB {
 func getSession() *gorm.DB {
 
 	db, err := gorm.Open("mysql",
-		config.USER+":"+config.PASSWORD+"@tcp("+config.HOST+":"+config.PORT+")/"+config.DB)
+		config.USER+":"+config.PASSWORD+"@tcp("+config.HOST+":"+config.PORT+")/"+config.DB+"?parseTime=true")
 
 	if err != nil {
 		logrus.Error(err)

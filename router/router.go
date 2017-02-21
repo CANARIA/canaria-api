@@ -66,7 +66,7 @@ func Init() *echo.Echo {
 		v1.POST("/auth/checktoken", api.CheckToken())
 		v1.POST("/auth/preregister", api.PreRegister())
 		v1.POST("/auth/register", api.AuthRegister())
-		v1.POST("/login", api.Login())
+		v1.POST("/auth/login", api.Login())
 		v1.GET("/populartags", api.PopularTags())
 	}
 

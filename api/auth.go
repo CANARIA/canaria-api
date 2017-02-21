@@ -61,8 +61,14 @@ func CheckToken() echo.HandlerFunc {
 
 		tx := c.Get("Tx").(*gorm.DB)
 
-		if _, err := auth.ValidPreAccountToken(tx); err != nil {
+		res, err := auth.ValidPreAccountToken(tx)
+
+		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
+		}
+
+		if res == nil {
+			return echo.NewHTTPError(http.StatusBadRequest, message.DUPULICATE_ACCOUNT)
 		}
 
 		return c.JSON(http.StatusOK, "ok")
@@ -84,17 +90,19 @@ func AuthRegister() echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
 		}
 
+		// TODO: トランザクション
+
 		// アカウントの作成
 		account := model.AccountImpl(authJson)
 		if err := account.AccountCreate(tx); err != nil {
-			println(err)
-			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			fmt.Errorf(err.Error())
+			return echo.NewHTTPError(http.StatusBadRequest, message.DUPULICATE_ACCOUNT)
 		}
 
 		// 仮登録情報の更新
 		if err := model.AcctivateAccount(tx, &auth); err != nil {
-			println(err)
-			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			fmt.Errorf(err.Error())
+			return echo.NewHTTPError(http.StatusInternalServerError, message.SYSTEM_ERROR)
 		}
 
 		// TODO: Session発行

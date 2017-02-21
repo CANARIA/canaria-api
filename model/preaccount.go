@@ -20,18 +20,17 @@ type Auth struct {
 var auth Auth
 
 type PreAccount struct {
-	Id          int64     `gorm:"column:id"`
-	UrlToken    string    `gorm:"column:url_token"`
-	CreatedAt   time.Time `gorm:"column:created_at"`
-	MailAddress string    `gorm:"column:mailaddress"`
-	IsRegisterd bool      `gorm:"column:is_registered"`
+	Id          int64      `gorm:"column:id"`
+	UrlToken    string     `gorm:"column:url_token"`
+	CreatedAt   *time.Time `gorm:"column:created_at"`
+	MailAddress string     `gorm:"column:mailaddress"`
+	IsRegisterd bool       `gorm:"column:is_registered"`
 }
 
 func PreAccountImpl(preRegister *PreRegister, token string) *PreAccount {
 	return &PreAccount{
 		Id:          0,
 		UrlToken:    token,
-		CreatedAt:   time.Now(),
 		MailAddress: preRegister.MailAddress,
 	}
 }
@@ -62,9 +61,9 @@ func AcctivateAccount(tx *gorm.DB, auth *Auth) error {
 	preAccount := PreAccount{IsRegisterd: true}
 
 	res := tx.
-		Model(&preAccount).
+		Table("pre_accounts").
 		Where("url_token = ? AND mailaddress = ?", auth.UrlToken, auth.MailAddress).
-		Update("is_registered")
+		Update(preAccount)
 
 	if res.Error != nil {
 		return fmt.Errorf("failed PreAccount update: %s", res.Error.Error())
@@ -75,9 +74,11 @@ func AcctivateAccount(tx *gorm.DB, auth *Auth) error {
 
 func (auth *Auth) ValidPreAccountToken(tx *gorm.DB) (*PreAccount, error) {
 
+	// TODO: 挙動がおかしいときがある。
+	// レシーバーではなく引数に渡されてくるようにする
 	tx.Select("*").
 		Table("pre_accounts").
-		Where("url_token = ? AND is_registered = ? AND created_at > now() - interval 24 hour", auth.UrlToken, 0).
+		Where("url_token = ? AND is_registered = 0 AND created_at > now() - interval 24 hour", auth.UrlToken).
 		Find(&preAccount)
 
 	if (PreAccount{}) == preAccount {
