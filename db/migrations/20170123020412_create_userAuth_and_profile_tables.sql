@@ -5,15 +5,14 @@ START TRANSACTION;
 
 CREATE TABLE accounts (
   user_id bigint NOT NULL AUTO_INCREMENT,
-  user_name varchar(255) NOT NULL,
-  mailaddress varchar(255) NOT NULL,
+  user_name varchar(255) NOT NULL UNIQUE,
+  mailaddress varchar(255) NOT NULL UNIQUE,
   password varchar(255) NOT NULL,
   roll tinyint(1) NOT NULL DEFAULT 1,
   created_at datetime NOT NULL DEFAULT now(),
   updated_at datetime NOT NULL DEFAULT now(),
   is_deleted tinyint(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (user_id),
-  UNIQUE (user_name, mailaddress)
+  PRIMARY KEY (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE profiles (
