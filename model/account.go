@@ -26,7 +26,7 @@ func AccountImpl(authRegister *AuthRegister) *Account {
 		UserId:      0,
 		UserName:    authRegister.UserName,
 		MailAddress: authRegister.MailAddress,
-		Password:    util.ToHash(authRegister.Password),
+		Password:    util.ToCrypt(authRegister.Password),
 	}
 }
 

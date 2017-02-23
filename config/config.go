@@ -12,6 +12,8 @@ const (
 	// HOST     string = "mysql"
 	HOST string = "127.0.0.1"
 	PORT string = "3306"
+
+	SALT string = "@#$%"
 )
 
 type Config struct {

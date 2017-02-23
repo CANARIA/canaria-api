@@ -34,6 +34,7 @@ type (
 		AccessToken string `json:"access_token"`
 		UserID      int64  `json:"user_id" gorm:"column:user_id"`
 		UserName    string `json:"user_name" gorm:"column:user_name"`
+		Password    string `json:"password" gorm:"column:password"`
 		DisplayName string `json:"display_name" gorm:"column:display_name"`
 		MailAddress string `json:"mailaddress" gorm:"column:mailaddress"`
 		Avatar      string `json:"avatar" gorm:"column:avatar"`

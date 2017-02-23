@@ -76,6 +76,9 @@ func CheckToken() echo.HandlerFunc {
 	}
 }
 
+/*
+  ユーザー登録
+*/
 func AuthRegister() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
@@ -115,11 +118,18 @@ func AuthRegister() echo.HandlerFunc {
 	}
 }
 
+/*
+  ログイン
+*/
 func Login() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var userInfo model.UserInfo
 		// headerから取得
 		accessToken := c.Request().Header.Get("access_token")
+
+		if accessToken == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, message.BAD_REQUEST)
+		}
 
 		loginClaim := new(model.LoginClaim)
 		if err := c.Bind(loginClaim); err != nil {
@@ -127,17 +137,23 @@ func Login() echo.HandlerFunc {
 		}
 		tx := c.Get("Tx").(*gorm.DB)
 
+		// userInfoにユーザー情報を詰めるため結合している
 		res := tx.Select("*").
 			Table("accounts a").
-			Joins("INNER JOIN profiles p ON a.user_id = p.user_id").
-			Where("a.user_name = ? AND a.password = ?", loginClaim.UserName, loginClaim.Password).
+			Joins("LEFT JOIN profiles p ON a.user_id = p.user_id").
+			Where("a.user_name = ?", loginClaim.UserName).
 			Find(&userInfo)
 
 		userInfo.AccessToken = accessToken
 		fmt.Println("userInfo => ", userInfo)
 
 		if res.Error != nil {
-			fmt.Errorf("LoginClaim{err=%s}", res.Error.Error())
+			fmt.Printf("LoginClaim{err=%s}", res.Error.Error())
+			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_LOGIN_CLAIM)
+		}
+
+		_, err := util.IsValidPassword(userInfo.Password, loginClaim.Password)
+		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_LOGIN_CLAIM)
 		}
 
