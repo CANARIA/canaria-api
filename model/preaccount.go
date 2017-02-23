@@ -4,28 +4,54 @@ import (
 	"fmt"
 	"time"
 
-	"errors"
-
 	"github.com/CANARIA/canaria-api/config"
 	"github.com/jinzhu/gorm"
 )
 
 var preAccount PreAccount
 
-type Auth struct {
-	UrlToken    string
-	MailAddress string
-}
-
 var auth Auth
 
-type PreAccount struct {
-	Id          int64      `gorm:"column:id"`
-	UrlToken    string     `gorm:"column:url_token"`
-	CreatedAt   *time.Time `gorm:"column:created_at"`
-	MailAddress string     `gorm:"column:mailaddress"`
-	IsRegisterd bool       `gorm:"column:is_registered"`
+type (
+	Auth struct {
+		UrlToken    *string
+		MailAddress *string
+	}
+
+	PreAccount struct {
+		Id          int64      `gorm:"column:id"`
+		UrlToken    string     `gorm:"column:url_token"`
+		CreatedAt   *time.Time `gorm:"column:created_at"`
+		MailAddress string     `gorm:"column:mailaddress"`
+		IsRegisterd bool       `gorm:"column:is_registered"`
+	}
+
+	preAccountDao struct {
+		*gorm.DB
+	}
+
+	PreAccountDao interface {
+		Dao
+	}
+)
+
+func PreAccountDaoFactory(db *gorm.DB) PreAccountDao {
+	return &preAccountDao{
+		DB: db,
+	}
 }
+
+//--------------------------------------------
+// Implementations for Dao interface
+//--------------------------------------------
+
+func (dao *preAccountDao) table() *gorm.DB {
+	return dao.Table("pre_accounts")
+}
+
+//--------------------------------------------
+// Implementations for Model interface
+//--------------------------------------------
 
 func PreAccountImpl(preRegister *PreRegister, token string) *PreAccount {
 	return &PreAccount{
@@ -36,10 +62,6 @@ func PreAccountImpl(preRegister *PreRegister, token string) *PreAccount {
 }
 
 func (preAccount *PreAccount) PreAccountCreate(tx *gorm.DB) error {
-	// _, err := tx.InsertInto("pre_accounts").
-	// 	Columns("url_token", "created_at", "mailaddress").
-	// 	Record(preAccount).
-	// 	Exec()
 	if res := tx.Create(preAccount); res.Error != nil {
 		return fmt.Errorf("failed PreAccount create: %s", res.Error.Error())
 	}
@@ -53,10 +75,6 @@ func BuildRegisterUrl(token string) string {
 }
 
 func AcctivateAccount(tx *gorm.DB, auth *Auth) error {
-	// _, err := tx.Update("pre_accounts").
-	// 	Set("is_registered", true).
-	// 	Where("url_token = ? AND mailaddress = ?", auth.UrlToken, auth.MailAddress).
-	// 	Exec()
 
 	preAccount := PreAccount{IsRegisterd: true}
 
@@ -72,17 +90,18 @@ func AcctivateAccount(tx *gorm.DB, auth *Auth) error {
 	return nil
 }
 
-func (auth *Auth) ValidPreAccountToken(tx *gorm.DB) (*PreAccount, error) {
+func ValidPreAccountToken(tx *gorm.DB, auth Auth) (*PreAccount, error) {
 
-	// TODO: 挙動がおかしいときがある。
-	// レシーバーではなく引数に渡されてくるようにする
-	tx.Select("*").
+	q := tx.Select("*").
 		Table("pre_accounts").
-		Where("url_token = ? AND is_registered = 0 AND created_at > now() - interval 24 hour", auth.UrlToken).
-		Find(&preAccount)
+		Where("url_token = ? AND is_registered = 0 AND created_at > now() - interval 24 hour", *auth.UrlToken)
 
-	if (PreAccount{}) == preAccount {
-		return &PreAccount{}, errors.New("invalid token: " + auth.UrlToken)
+	if res := q.Find(&preAccount); res.Error != nil {
+		return nil, fmt.Errorf("invalid token: %s", res.Error)
 	}
+
+	// if (PreAccount{}) == preAccount {
+	// 	return &PreAccount{}, errors.New("invalid token: " + *auth.UrlToken)
+	// }
 	return &preAccount, nil
 }

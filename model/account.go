@@ -32,8 +32,6 @@ func AccountImpl(authRegister *AuthRegister) *Account {
 
 func (account *Account) AccountCreate(tx *gorm.DB) error {
 
-	fmt.Println("insert account ", *account)
-
 	if res := tx.Table("accounts").Create(account); res.Error != nil {
 		return fmt.Errorf("failed account create{%v}", *account)
 	}

@@ -32,3 +32,6 @@ _testmain.go
 # Glide
 vendor
 
+# VScode
+launch.json
+

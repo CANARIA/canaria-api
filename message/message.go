@@ -6,8 +6,8 @@ const (
 	PRE_REGISTER_MAIL_BODY = `Canariaにご登録ありがとうございます。
   24時間以内に下記のURLからご登録下さい。
   `
-	DUPULICATE_ACCOUNT = "既に登録済みのアカウントです"
-	INVALIED_TOKEN     = "このURLは不正です。有効期限が切れた、または登録済みの可能性があります"
+	DUPULICATE_ACCOUNT = "そのユーザー名は既に使われています"
+	INVALIED_TOKEN     = "このURLは不正です。有効期限が切れた、または既に登録されたユーザーが存在する可能性があります"
 	REGISTER_SUBJECT   = "【Canaria】会員登録完了のお知らせ"
 	REGISTER_MAIL_BODY = `本登録が完了しました。
   -----------------------

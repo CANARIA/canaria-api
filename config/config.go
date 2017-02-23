@@ -9,8 +9,9 @@ const (
 	USER     string = "root"
 	PASSWORD string = "password"
 	DB       string = "canaria"
-	HOST     string = "mysql"
-	PORT     string = "3306"
+	// HOST     string = "mysql"
+	HOST string = "127.0.0.1"
+	PORT string = "3306"
 )
 
 type Config struct {

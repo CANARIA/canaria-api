@@ -14,6 +14,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+// 仮登録
 func PreRegister() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var account model.Account
@@ -51,18 +52,18 @@ func PreRegister() echo.HandlerFunc {
 	}
 }
 
+// トークンチェック
 func CheckToken() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		checkTokenJson := new(model.CheckToken)
 		if err := c.Bind(checkTokenJson); err != nil {
 			return err
 		}
-		auth := model.Auth{UrlToken: checkTokenJson.UrlToken}
+		auth := model.Auth{UrlToken: &checkTokenJson.UrlToken}
 
 		tx := c.Get("Tx").(*gorm.DB)
 
-		res, err := auth.ValidPreAccountToken(tx)
-
+		res, err := model.ValidPreAccountToken(tx, auth)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
 		}
@@ -82,11 +83,11 @@ func AuthRegister() echo.HandlerFunc {
 		if err := c.Bind(authJson); err != nil {
 			return err
 		}
-		auth := model.Auth{UrlToken: authJson.UrlToken, MailAddress: authJson.MailAddress}
+		auth := model.Auth{UrlToken: &authJson.UrlToken, MailAddress: &authJson.MailAddress}
 
 		tx := c.Get("Tx").(*gorm.DB)
 
-		if _, err := auth.ValidPreAccountToken(tx); err != nil {
+		if _, err := model.ValidPreAccountToken(tx, auth); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
 		}
 

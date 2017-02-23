@@ -33,7 +33,7 @@ func BuildPreRegisterMail(preAccount model.PreAccount, url string) *Mail {
 
 func BuildRegisteredMail(auth model.Auth) *Mail {
 	return &Mail{
-		To:      auth.MailAddress,
+		To:      *auth.MailAddress,
 		From:    config.GetMailAddress(),
 		Subject: message.REGISTER_SUBJECT,
 		Body:    message.REGISTER_MAIL_BODY,

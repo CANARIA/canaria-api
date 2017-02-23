@@ -7,7 +7,6 @@ import (
 	"github.com/CANARIA/canaria-api/api"
 	"github.com/CANARIA/canaria-api/db"
 	appMw "github.com/CANARIA/canaria-api/middleware"
-	"github.com/garyburd/redigo/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
@@ -40,12 +39,12 @@ func Init() *echo.Echo {
 	// set custome middleware
 	e.Use(appMw.TransactionHandler(db.Init()))
 
-	c, err := redis.Dial("tcp", "redis:6379")
-	if err != nil {
-		println("Redis connection failed")
-	}
+	// c, err := redis.Dial("tcp", "redis:6379")
+	// if err != nil {
+	// 	println("Redis connection failed")
+	// }
 
-	defer c.Close()
+	// defer c.Close()
 
 	// testKey, err := redis.String(c.Do("GET", "testkey"))
 	// if err != nil {
