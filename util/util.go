@@ -1,8 +1,6 @@
 package util
 
 import (
-	"encoding/hex"
-
 	"fmt"
 
 	"github.com/CANARIA/canaria-api/config"
@@ -16,16 +14,16 @@ func ToCrypt(password string) string {
 	return string(hashedPassword)
 }
 
-func IsValidPassword(accountPassword, claimedPassword string) (bool, error) {
-	decodedByte, err := hex.DecodeString(accountPassword)
-	if err != nil {
-		fmt.Errorf("failed: decode hashed password", err.Error())
-		return false, err
-	}
-	fmt.Println("claimedPassword:", claimedPassword)
-	fmt.Println("accountPassword:", accountPassword)
+func IsValidPassword(accountPassword string, claimedPassword string) (bool, error) {
+	// decodedByte, err := hex.DecodeString(accountPassword)
+	// if err != nil {
+	// 	fmt.Errorf("failed: decode hashed password", err.Error())
+	// 	return false, err
+	// }
+	// fmt.Println("claimedPassword:", claimedPassword)
+	// fmt.Println("accountPassword:", accountPassword)
 
-	if err := bcrypt.CompareHashAndPassword(decodedByte, []byte(claimedPassword)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(accountPassword), []byte(claimedPassword)); err != nil {
 		return false, err
 	}
 
