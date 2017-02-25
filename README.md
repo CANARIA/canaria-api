@@ -20,24 +20,24 @@ EOF
 
 ```sh
 $ mkdir -p $GOPATH/src/github.com/CANARIA
-$ git clone [フォークしたリポジトリパス]
+$ git clone git@github.com:CANARIA/canaria-api.git
 
 # もしくは(ｇｈｑが入っていれば)
-$ ghq get [フォークしたリポジトリパス]
+$ ghq get git@github.com:CANARIA/canaria-api.git
 ```
 
 ## dockerコンテナの立ち上げ
 
 ```sh
 # コンテナの立ち上げ
-$ docker-compose up -d
+$ docker-compose up -d mysql redis redis-commander
 
 # コンテナの確認
 $ docker-compose ps
 ```
 
 立ち上がるコンテナは以下の通り
-- APIコンテナ (:5000)
+- <s>APIコンテナ (:5000)</s>
 - MySQLコンテナ (:3306)
 - Redisコンテナ（:6379）
 - Redis Commanderコンテナ（:8081）
@@ -61,7 +61,7 @@ $ make migrate
 $ make deps
 
 # APIサーバの起動
-$ go run server.go
+$ make run dev または go run server.go
 ```
 
 `localhost:5000`でAPIサーバーにアクセスできます
@@ -72,13 +72,13 @@ $ go run server.go
 # すべてのコンテナのログが混ざって出る
 $ docker-compose logs
 
-# 特定コンテナのログのみを見たい(以下の例はAPIサーバのログを見る)
+# 特定コンテナのログのみを見たい(以下の例はmysqlコンテナのログを見る)
 # ※コンテナ名ではなくサービス名を指定すること
-$ docker-compose logs api
+$ docker-compose logs mysql
 
 # オプションの説明
 # f: ストリーミングでログを出力する
 # t: 時間を含めた詳細なログを出力する
-$ docker-compose logs -ft api
+$ docker-compose logs -ft mysql
 ```
 
