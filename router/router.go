@@ -32,7 +32,7 @@ func Init() *echo.Echo {
 	e.Use(mw.Gzip())
 	e.Use(mw.CORSWithConfig(mw.CORSConfig{
 		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding},
+		// AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding},
 	}))
 	// e.SetHTTPErrorHandler(handler.JSONHTTPErrorHandler)
 
