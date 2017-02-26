@@ -32,6 +32,8 @@ type (
 
 	PreAccountDao interface {
 		Dao
+		AcctivateAccount(*PreAccount) error
+		ValidPreAccountToken(*Auth) (*PreAccount, error)
 	}
 )
 
@@ -74,13 +76,22 @@ func BuildRegisterUrl(token string) string {
 	return url
 }
 
-func AcctivateAccount(tx *gorm.DB, auth *Auth) error {
+func BuildPreAccountEntity(auth *Auth, preAccount *PreAccount) *PreAccount {
+	return &PreAccount{
+		UrlToken:    *auth.UrlToken,
+		MailAddress: preAccount.MailAddress,
+	}
+}
 
-	preAccount := PreAccount{IsRegisterd: true}
+/*
+仮登録情報を本登録に更新
+*/
+func (dao *preAccountDao) AcctivateAccount(preAccountRow *PreAccount) error {
 
-	res := tx.
-		Table("pre_accounts").
-		Where("url_token = ? AND mailaddress = ?", auth.UrlToken, auth.MailAddress).
+	preAccount := &PreAccount{IsRegisterd: true}
+
+	res := dao.table().
+		Where("url_token = ? AND mailaddress = ?", preAccountRow.UrlToken, &preAccountRow.MailAddress).
 		Update(preAccount)
 
 	if res.Error != nil {
@@ -90,18 +101,17 @@ func AcctivateAccount(tx *gorm.DB, auth *Auth) error {
 	return nil
 }
 
-func ValidPreAccountToken(tx *gorm.DB, auth Auth) (*PreAccount, error) {
+/*
+仮登録情報の妥当性確認
+*/
+func (dao *preAccountDao) ValidPreAccountToken(auth *Auth) (*PreAccount, error) {
 
-	q := tx.Select("*").
-		Table("pre_accounts").
+	q := dao.table().
 		Where("url_token = ? AND is_registered = 0 AND created_at > now() - interval 24 hour", *auth.UrlToken)
 
 	if res := q.Find(&preAccount); res.Error != nil {
 		return nil, fmt.Errorf("invalid token: %s", res.Error)
 	}
 
-	// if (PreAccount{}) == preAccount {
-	// 	return &PreAccount{}, errors.New("invalid token: " + *auth.UrlToken)
-	// }
 	return &preAccount, nil
 }

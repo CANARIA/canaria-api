@@ -31,9 +31,9 @@ func BuildPreRegisterMail(preAccount model.PreAccount, url string) *Mail {
 
 }
 
-func BuildRegisteredMail(auth model.Auth) *Mail {
+func BuildRegisteredMail(preAccount *model.PreAccount) *Mail {
 	return &Mail{
-		To:      *auth.MailAddress,
+		To:      preAccount.MailAddress,
 		From:    config.GetMailAddress(),
 		Subject: message.REGISTER_SUBJECT,
 		Body:    message.REGISTER_MAIL_BODY,

@@ -63,7 +63,8 @@ func CheckToken() echo.HandlerFunc {
 
 		tx := c.Get("Tx").(*gorm.DB)
 
-		res, err := model.ValidPreAccountToken(tx, auth)
+		preAccountDao := model.PreAccountDaoFactory(tx)
+		res, err := preAccountDao.ValidPreAccountToken(&auth)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
 		}
@@ -86,32 +87,38 @@ func AuthRegister() echo.HandlerFunc {
 		if err := c.Bind(authJson); err != nil {
 			return err
 		}
-		auth := model.Auth{UrlToken: &authJson.UrlToken, MailAddress: &authJson.MailAddress}
+		auth := model.Auth{UrlToken: &authJson.UrlToken}
 
 		tx := c.Get("Tx").(*gorm.DB)
 
-		if _, err := model.ValidPreAccountToken(tx, auth); err != nil {
+		preAccountDao := model.PreAccountDaoFactory(tx)
+		// トークンチェック
+		res, err := preAccountDao.ValidPreAccountToken(&auth)
+		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, message.INVALIED_TOKEN)
 		}
 
 		// TODO: トランザクション
 
 		// アカウントの作成
-		account := model.AccountImpl(authJson)
-		if err := account.AccountCreate(tx); err != nil {
+		accountDao := model.AccountDaoFactory(tx)
+		account := model.AccountImpl(authJson, res)
+
+		if err := accountDao.Create(account); err != nil {
 			fmt.Errorf(err.Error())
 			return echo.NewHTTPError(http.StatusBadRequest, message.DUPULICATE_ACCOUNT)
 		}
 
 		// 仮登録情報の更新
-		if err := model.AcctivateAccount(tx, &auth); err != nil {
+		preAccount := model.BuildPreAccountEntity(&auth, res)
+		if err := preAccountDao.AcctivateAccount(preAccount); err != nil {
 			fmt.Errorf(err.Error())
 			return echo.NewHTTPError(http.StatusInternalServerError, message.SYSTEM_ERROR)
 		}
 
 		// TODO: Session発行
 		// 登録確認メール送信
-		mail := mail.BuildRegisteredMail(auth)
+		mail := mail.BuildRegisteredMail(preAccount)
 		mail.Send()
 
 		return c.JSON(http.StatusOK, authJson)

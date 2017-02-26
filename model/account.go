@@ -10,36 +10,59 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type Account struct {
-	UserId      int64     `gorm:"column:user_id"`
-	UserName    string    `gorm:"column:user_name"`
-	MailAddress string    `gorm:"column:mailaddress"`
-	Password    string    `gorm:"column:password"`
-	Roll        int8      `gorm:"column:roll"`
-	CreatedAt   time.Time `gorm:"column:created_at"`
-	UpdatedAt   time.Time `gorm:"column:updated_at"`
-	IsDeleted   bool      `gorm:"column:is_deleted"`
+type (
+	Account struct {
+		UserId      int64     `gorm:"column:user_id"`
+		UserName    string    `gorm:"column:user_name"`
+		MailAddress string    `gorm:"column:mailaddress"`
+		Password    string    `gorm:"column:password"`
+		Roll        int8      `gorm:"column:roll"`
+		CreatedAt   time.Time `gorm:"column:created_at"`
+		UpdatedAt   time.Time `gorm:"column:updated_at"`
+		IsDeleted   bool      `gorm:"column:is_deleted"`
+	}
+	accountDao struct {
+		*gorm.DB
+	}
+
+	AccountDao interface {
+		Dao
+		Create(*Account) error
+	}
+)
+
+func AccountDaoFactory(db *gorm.DB) AccountDao {
+	return &accountDao{
+		DB: db,
+	}
 }
 
-func AccountImpl(authRegister *AuthRegister) *Account {
+//--------------------------------------------
+// Implementations for Dao interface
+//--------------------------------------------
+
+func (dao *accountDao) table() *gorm.DB {
+	return dao.Table("accounts")
+}
+
+//--------------------------------------------
+// Implementations for Model interface
+//--------------------------------------------
+
+func AccountImpl(authRegister *AuthRegister, preAccount *PreAccount) *Account {
 	return &Account{
 		UserId:      0,
 		UserName:    authRegister.UserName,
-		MailAddress: authRegister.MailAddress,
+		MailAddress: preAccount.MailAddress,
 		Password:    util.ToCrypt(authRegister.Password),
 	}
 }
 
-func (account *Account) AccountCreate(tx *gorm.DB) error {
+func (dao *accountDao) Create(account *Account) error {
 
-	if res := tx.Table("accounts").Create(account); res.Error != nil {
-		return fmt.Errorf("failed account create{%v}", *account)
+	if res := dao.table().Create(account); res.Error != nil {
+		return fmt.Errorf("failed account create{%v}", account)
 	}
-
-	// _, err := tx.InsertInto("accounts").
-	// 	Columns("user_name", "mailaddress", "password").
-	// 	Record(account).
-	// 	Exec()
 
 	return nil
 }
