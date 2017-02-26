@@ -12,7 +12,7 @@ import (
 
 type (
 	Account struct {
-		UserId      int64     `gorm:"column:user_id"`
+		UserId      int64     `gorm:"column:user_id;primary_key"`
 		UserName    string    `gorm:"column:user_name"`
 		MailAddress string    `gorm:"column:mailaddress"`
 		Password    string    `gorm:"column:password"`
@@ -60,7 +60,7 @@ func AccountImpl(authRegister *AuthRegister, preAccount *PreAccount) *Account {
 
 func (dao *accountDao) Create(account *Account) error {
 
-	if res := dao.table().Create(account); res.Error != nil {
+	if res := dao.table().Save(&account); res.Error != nil {
 		return fmt.Errorf("failed account create{%v}", account)
 	}
 

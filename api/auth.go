@@ -109,6 +109,16 @@ func AuthRegister() echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusBadRequest, message.DUPULICATE_ACCOUNT)
 		}
 
+		// プロフィールの作成
+		profileDao := model.ProfileDaoFactory(tx)
+
+		profile := profileDao.ProfileImpl(authJson, account)
+
+		if err := profileDao.Create(profile); err != nil {
+			fmt.Errorf(err.Error())
+			return echo.NewHTTPError(http.StatusBadRequest, message.SYSTEM_ERROR)
+		}
+
 		// 仮登録情報の更新
 		preAccount := model.BuildPreAccountEntity(&auth, res)
 		if err := preAccountDao.AcctivateAccount(preAccount); err != nil {

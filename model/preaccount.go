@@ -19,7 +19,7 @@ type (
 	}
 
 	PreAccount struct {
-		Id          int64      `gorm:"column:id"`
+		Id          int64      `gorm:"column:id;primary_key"`
 		UrlToken    string     `gorm:"column:url_token"`
 		CreatedAt   *time.Time `gorm:"column:created_at"`
 		MailAddress string     `gorm:"column:mailaddress"`
