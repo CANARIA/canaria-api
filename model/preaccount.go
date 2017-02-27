@@ -8,8 +8,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var preAccount PreAccount
-
 var auth Auth
 
 type (
@@ -105,6 +103,8 @@ func (dao *preAccountDao) AcctivateAccount(preAccountRow *PreAccount) error {
 仮登録情報の妥当性確認
 */
 func (dao *preAccountDao) ValidPreAccountToken(auth *Auth) (*PreAccount, error) {
+
+	var preAccount PreAccount
 
 	q := dao.table().
 		Where("url_token = ? AND is_registered = 0 AND created_at > now() - interval 24 hour", *auth.UrlToken)

@@ -1,9 +1,8 @@
 package model
 
 import (
-	"time"
-
 	"fmt"
+	"time"
 
 	"database/sql"
 
