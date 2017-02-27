@@ -30,6 +30,7 @@ func Init() *echo.Echo {
 	e.Use(mw.Logger())
 	e.Use(mw.Recover())
 	e.Use(mw.Gzip())
+	e.Use(mw.CORS())
 	e.Use(mw.CORSWithConfig(mw.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE, echo.OPTIONS},
