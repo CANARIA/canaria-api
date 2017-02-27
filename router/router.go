@@ -35,7 +35,12 @@ func Init() *echo.Echo {
 		AllowOrigins:     []string{"*"},
 		AllowCredentials: true,
 		AllowMethods:     []string{echo.GET, echo.POST, echo.PUT, echo.DELETE, echo.OPTIONS},
-		// AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAcceptEncoding},
+		AllowHeaders: []string{
+			echo.HeaderOrigin,
+			echo.HeaderContentType,
+			echo.HeaderAcceptEncoding,
+			echo.HeaderAccessControlAllowOrigin,
+			echo.HeaderAccessControlRequestHeaders},
 	}))
 	// e.SetHTTPErrorHandler(handler.JSONHTTPErrorHandler)
 
