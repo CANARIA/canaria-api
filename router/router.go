@@ -25,6 +25,7 @@ func Init() *echo.Echo {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
+	e.Debug = true
 	e.Logger.Debug()
 
 	e.Use(mw.Logger())
@@ -69,7 +70,7 @@ func Init() *echo.Echo {
 		v1.POST("/auth/preregister", api.PreRegister())
 		v1.POST("/auth/register", api.AuthRegister())
 		v1.POST("/auth/login", api.Login())
-		v1.GET("/populartags", api.PopularTags())
+		v1.GET("/populartags", api.PopularTags(), appMw.AuthFilter())
 	}
 
 	return e
