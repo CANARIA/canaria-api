@@ -43,7 +43,7 @@ func AuthFilter() echo.MiddlewareFunc {
 
 			// contextにユーザー情報を含む
 
-			return nil
+			return next(c)
 
 			// tx := db.Begin()
 			// logrus.Debug("Transaction Start")
