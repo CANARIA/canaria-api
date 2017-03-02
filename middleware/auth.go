@@ -11,12 +11,16 @@ import (
 	"github.com/labstack/echo"
 )
 
+const (
+	UserInfo = "UserInfo"
+)
+
 func AuthFilter() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return echo.HandlerFunc(func(c echo.Context) error {
 
 			accessToken := c.Request().Header.Get("access_token")
-			claimedJwt := c.Request().Header.Get("jwt")
+			claimedJwt := c.Request().Header.Get("Authorization")
 
 			if accessToken == "" && claimedJwt == "" {
 				logrus.Info("failed: Unauthorized")
@@ -25,6 +29,10 @@ func AuthFilter() echo.MiddlewareFunc {
 
 			userInfo := model.UserInfo{}
 			token, err := jwt.ParseWithClaims(claimedJwt, &userInfo, func(token *jwt.Token) (interface{}, error) {
+				// Make sure token's signature wasn't changed
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, fmt.Errorf("Unexpected siging method")
+				}
 				return []byte("ServerSecretKey"), nil
 			})
 			fmt.Println(token.Valid, userInfo, err)
@@ -38,31 +46,14 @@ func AuthFilter() echo.MiddlewareFunc {
 
 			// リクエストのアクセストークンとJWTに含まれたアクセストークンが一致しなかったら認証失敗
 			if accessToken != userInfo.AccessToken {
-				return c.JSON(http.StatusUnauthorized, "認証リクエストが不正です。")
+				return c.JSON(http.StatusUnauthorized, "認証リクエストが不正です")
 			}
 
 			// contextにユーザー情報を含む
+			c.Set(UserInfo, &userInfo)
 
 			return next(c)
 
-			// tx := db.Begin()
-			// logrus.Debug("Transaction Start")
-			// fmt.Println("Transaction Start")
-
-			// c.Set(TxKey, tx)
-
-			// if err := next(c); err != nil {
-			// 	tx.Rollback()
-			// 	fmt.Println("Transction Rollback")
-			// 	logrus.Debug("Transction Rollback: ", err)
-			// 	return err
-			// }
-
-			// fmt.Println("Transction Commit")
-			// logrus.Debug("Transction Commit")
-			// tx.Commit()
-
-			// return nil
 		})
 	}
 }

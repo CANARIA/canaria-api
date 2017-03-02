@@ -3,9 +3,11 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/CANARIA/canaria-api/mail"
 	"github.com/CANARIA/canaria-api/message"
+	"github.com/CANARIA/canaria-api/middleware"
 	"github.com/CANARIA/canaria-api/model"
 	"github.com/CANARIA/canaria-api/util"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -175,8 +177,15 @@ func Login() echo.HandlerFunc {
 		}
 
 		// TODO: token生成は共通化する
+		// JWTの有効期限設定
+		standardClaim := jwt.StandardClaims{
+			// 有効期限は72時間（3日後）
+			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+			Issuer:    "canaria.io",
+		}
+		userInfo.StandardClaims = standardClaim
 		// アクセストークンとユーザ情報を一緒にトークン化
-		token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &userInfo)
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, &userInfo)
 		// Secretで文字列にする. このSecretはサーバだけが知っている
 		tokenstring, err := token.SignedString([]byte("ServerSecretKey"))
 		if err != nil {
@@ -186,10 +195,23 @@ func Login() echo.HandlerFunc {
 		respUserInfo := ConvertToRespUserInfo(userInfo)
 
 		c.Response().Header().Set("access_token", accessToken)
-		c.Response().Header().Set("jwt", tokenstring)
+		c.Response().Header().Set("Authorization", tokenstring)
 
 		return c.JSON(http.StatusOK, &respUserInfo)
 	}
+}
+
+/*
+認証チェック
+*/
+func CheckAuth() echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		userInfo := c.Get(middleware.UserInfo).(*model.UserInfo)
+
+		return c.JSON(http.StatusOK, userInfo)
+	}
+
 }
 
 // トークン付きユーザー情報からクライアントに必要な情報だけをコンバート
