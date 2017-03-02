@@ -70,6 +70,7 @@ func Init() *echo.Echo {
 		v1.POST("/auth/preregister", api.PreRegister())
 		v1.POST("/auth/register", api.AuthRegister())
 		v1.POST("/auth/login", api.Login())
+		v1.POST("/auth/check", api.CheckAuth(), appMw.AuthFilter())
 		v1.GET("/populartags", api.PopularTags(), appMw.AuthFilter())
 	}
 

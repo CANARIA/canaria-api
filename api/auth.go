@@ -7,7 +7,6 @@ import (
 
 	"github.com/CANARIA/canaria-api/mail"
 	"github.com/CANARIA/canaria-api/message"
-	"github.com/CANARIA/canaria-api/middleware"
 	"github.com/CANARIA/canaria-api/model"
 	"github.com/CANARIA/canaria-api/util"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -207,9 +206,9 @@ func Login() echo.HandlerFunc {
 func CheckAuth() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		userInfo := c.Get(middleware.UserInfo).(*model.UserInfo)
+		// middlewareで認証フィルター
 
-		return c.JSON(http.StatusOK, userInfo)
+		return c.JSON(http.StatusOK, "ok")
 	}
 
 }
