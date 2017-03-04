@@ -55,10 +55,6 @@ func Init() *echo.Echo {
 	// 	println("Can not get value")
 	// }
 
-	// view
-	// e.GET("/", handler.Home)
-	// e.GET("/snippet", handler.Snippet)
-	// e.GET("/create", handler.SnippetCreate)
 	e.GET("/ping", func(c echo.Context) error {
 		return c.String(http.StatusOK, "pong!")
 	})
@@ -71,7 +67,7 @@ func Init() *echo.Echo {
 		v1.POST("/auth/register", api.AuthRegister())
 		v1.POST("/auth/login", api.Login())
 		v1.POST("/auth/check", api.CheckAuth(), appMw.AuthFilter())
-		v1.GET("/populartags", api.PopularTags(), appMw.AuthFilter())
+		v1.GET("/populartags", api.PopularTags())
 	}
 
 	return e
