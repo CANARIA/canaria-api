@@ -68,6 +68,7 @@ func Init() *echo.Echo {
 		v1.POST("/auth/login", api.Login())
 		v1.POST("/auth/check", api.CheckAuth(), appMw.AuthFilter())
 		v1.GET("/populartags", api.PopularTags())
+		v1.GET("/tags", api.Tags())
 	}
 
 	return e

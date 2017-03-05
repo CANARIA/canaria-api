@@ -10,9 +10,9 @@ import (
 
 type (
 	PopularTag struct {
-		TagId     int64     `gorm:column:tag_id`
-		TagName   string    `gorm:"column:tag_name"`
-		CreatedAt time.Time `gorm:"column:created_at"`
+		TagId     int64     `json:"tag_id" gorm:column:tag_id`
+		TagName   string    `json:"tag_name" gorm:"column:tag_name"`
+		CreatedAt time.Time `json:"created_at" gorm:"column:created_at"`
 	}
 	popularTagDao struct {
 		*gorm.DB
