@@ -4,15 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/CANARIA/canaria-api/config"
 	"github.com/CANARIA/canaria-api/message"
 	"github.com/CANARIA/canaria-api/model"
 	"github.com/Sirupsen/logrus"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
-)
-
-const (
-	UserInfo = "UserInfo"
 )
 
 func AuthFilter() echo.MiddlewareFunc {
@@ -50,7 +47,7 @@ func AuthFilter() echo.MiddlewareFunc {
 			}
 
 			// contextにユーザー情報を含む
-			c.Set(UserInfo, &userInfo)
+			c.Set(config.UserInfo, &userInfo)
 
 			return next(c)
 
