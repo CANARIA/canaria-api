@@ -37,3 +37,5 @@ vendor
 # VScode
 launch.json
 
+# build file
+canaria-api

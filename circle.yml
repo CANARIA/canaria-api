@@ -1,3 +1,15 @@
-notify:
-  webhooks:
-    - url: https://hooks.slack.com/services/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
+machine:
+  environment:
+    # project ID
+    GCLOUD_PROJECT: "aerobic-arc-159407"
+
+deployment:
+  staging:
+    branch: master
+    commands:
+    # install dependency module
+    # build for linux/x64
+    - make build
+    # deploy to compute engine
+    - gcloud compute copy-files canaria-api stg-api01:~ --zone us-west1-b
+    # Run by Supervisord

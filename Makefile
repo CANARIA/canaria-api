@@ -10,3 +10,6 @@ fmt:
 
 run dev:
 	go run server.go
+
+build:
+	GOOS=linux GOARCH=amd64 go build
