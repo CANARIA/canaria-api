@@ -14,6 +14,8 @@ const (
 	PORT string = "3306"
 
 	SALT string = "@#$%"
+
+	UserInfo = "UserInfo"
 )
 
 type Config struct {

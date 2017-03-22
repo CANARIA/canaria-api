@@ -11,6 +11,7 @@ import (
 	"github.com/CANARIA/canaria-api/util"
 	jwt "github.com/dgrijalva/jwt-go"
 
+	"github.com/CANARIA/canaria-api/config"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 )
@@ -178,8 +179,8 @@ func Login() echo.HandlerFunc {
 		// TODO: token生成は共通化する
 		// JWTの有効期限設定
 		standardClaim := jwt.StandardClaims{
-			// 有効期限は72時間（3日後）
-			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+			// 有効期限は720時間（30日後）
+			ExpiresAt: time.Now().Add(time.Hour * 720).Unix(),
 			Issuer:    "canaria.io",
 		}
 		userInfo.StandardClaims = standardClaim
@@ -206,9 +207,19 @@ func Login() echo.HandlerFunc {
 func CheckAuth() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		// middlewareで認証フィルター
+		/*
+		 middlewareの認証フィルターが通れば以降の処理が走る
+		*/
 
-		return c.JSON(http.StatusOK, "ok")
+		jwt := c.Request().Header.Get("Authorization")
+
+		userInfo := c.Get(config.UserInfo).(*model.UserInfo)
+		respUserInfo := ConvertToRespUserInfo(*userInfo)
+
+		c.Response().Header().Set("access_token", userInfo.AccessToken)
+		c.Response().Header().Set("Authorization", jwt)
+
+		return c.JSON(http.StatusOK, respUserInfo)
 	}
 
 }
