@@ -1,4 +1,6 @@
 machine:
+  timezone:
+    Asia/Tokyo
   environment:
     # project ID
     GCLOUD_PROJECT: "aerobic-arc-159407"
