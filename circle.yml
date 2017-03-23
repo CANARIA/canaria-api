@@ -27,5 +27,5 @@ deployment:
     # deploy to compute engine
     - sudo cat ${HOME}/.ssh/id_stg-api01
     - sudo cat ${HOME}/.ssh/id_stg-api01.pub
-    - sudo /opt/google-cloud-sdk/bin/gcloud compute copy-files canaria-api canaria-user@stg-api01:~ --ssh-key-file ${HOME}/.ssh/id_stg-api01 --zone us-west1-b
+    - sudo /opt/google-cloud-sdk/bin/gcloud compute copy-files canaria-api canaria-user@stg-api01:~ --zone us-west1-b
     # Run by Supervisord
