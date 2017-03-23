@@ -10,10 +10,12 @@ deployment:
     # install dependency module
     # build for linux/x64
     - make build
+    # update gcloud components
+    - gcloud components update
     # set project ID
     - gcloud config set project $GCLOUD_PROJECT
     # show gcloud config
-    - gloud config list
+    - gcloud config list
     # deploy to compute engine
     - gcloud compute copy-files canaria-api stg-api01:~ --zone us-west1-b
     # Run by Supervisord
