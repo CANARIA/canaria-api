@@ -22,6 +22,8 @@ deployment:
     # install dependency module
     # build for linux/x64
     - make build
+    # show project info
+    - gcloud compute project-info describe
     # deploy to compute engine
-    - sudo /opt/google-cloud-sdk/bin/gcloud compute copy-files canaria-api stg-api01:~ --zone us-west1-b
+    - sudo /opt/google-cloud-sdk/bin/gcloud compute copy-files canaria-api canaria-user@stg-api01:~ --zone us-west1-b
     # Run by Supervisord
