@@ -10,8 +10,6 @@ deployment:
     # install dependency module
     # build for linux/x64
     - make build
-    # update gcloud components
-    - gcloud components update
     # set project ID
     - gcloud config set project $GCLOUD_PROJECT
     # show gcloud config
