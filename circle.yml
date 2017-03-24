@@ -20,8 +20,12 @@ deployment:
     # show gcloud config
     - sudo /opt/google-cloud-sdk/bin/gcloud config list
     # install dependency module
+    - ls -la
     # build for linux/x64
     - make build
+    # ===debug===
+    - pwd
+    - ls -la
     # show project info
     - sudo /opt/google-cloud-sdk/bin/gcloud compute project-info describe
     # deploy to compute engine
