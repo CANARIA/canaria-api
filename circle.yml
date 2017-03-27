@@ -13,6 +13,8 @@ deployment:
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
     # decode and make service key
     - echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
+    # 400 permition
+    - chmod 400 gcloud-service-key.json
     # activate auth account
     - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
     # set project ID
@@ -31,5 +33,5 @@ deployment:
     # deploy to compute engine
     - sudo cat ${HOME}/.ssh/id_stg-api01
     - sudo cat ${HOME}/.ssh/id_stg-api01.pub
-    - sudo /opt/google-cloud-sdk/bin/gcloud compute copy-files canaria-api canaria-user@stg-api01:~ --ssh-key-file ${HOME}/.ssh/id_stg-api01 --zone us-west1-b
+    - sudo /opt/google-cloud-sdk/bin/gcloud compute copy-files canaria-api canaria-user@stg-api01:~ --ssh-key-file ${HOME}/.ssh/id_stg-api01 --zone us-west1-b --project $GCLOUD_PROJECT
     # Run by Supervisord
