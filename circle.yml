@@ -14,7 +14,7 @@ deployment:
     # decode and make service key
     - echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
     # activate auth account
-    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account circleci-deploy-manager@aerobic-arc-159407.iam.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account circleci-deploy-manager@aerobic-arc-159407.iam.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json --project $GCLOUD_PROJECT
     # set project ID
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
     # show gcloud config
@@ -31,5 +31,5 @@ deployment:
     # deploy to compute engine
     - sudo cat ${HOME}/.ssh/id_stg-api01
     - sudo cat ${HOME}/.ssh/id_stg-api01.pub
-    - sudo /opt/google-cloud-sdk/bin/gcloud compute copy-files canaria-api canaria-user@stg-api01:~ --ssh-key-file ${HOME}/.ssh/id_stg-api01 --zone us-west1-b
+    - sudo /opt/google-cloud-sdk/bin/gcloud compute copy-files canaria-api canaria-user@stg-api01:~ --ssh-key-file ${HOME}/.ssh/id_stg-api01 --zone us-west1-b --project $GCLOUD_PROJECT
     # Run by Supervisord
