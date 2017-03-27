@@ -16,7 +16,7 @@ deployment:
     # 400 permition
     - chmod 400 gcloud-service-key.json
     # activate auth account
-    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account circleci-deploy-manager@aerobic-arc-159407.iam.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json --project $GCLOUD_PROJECT
     # set project ID
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
     # show gcloud config
