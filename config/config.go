@@ -15,7 +15,9 @@ const (
 
 	SALT string = "@#$%"
 
-	UserInfo = "UserInfo"
+	UserInfo string = "UserInfo"
+	IsDebug  string = "IS_DEBUG"
+	Env      string = "API_ENV"
 )
 
 type Config struct {

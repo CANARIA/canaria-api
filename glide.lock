@@ -1,8 +1,14 @@
-hash: 5d8b5b44fddabce0c1f8de0c02703d6d3c29aeba48d939ef764599ec352c2e1e
-updated: 2017-02-21T01:57:49.564524989+09:00
+hash: 873b47bb45c5bb196696d24904c04f7d66e4c7ed4a53c43550eb2320776064c0
+updated: 2017-03-30T02:03:44.403965773+09:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: a601269ab70c205d26370c16f7c81e9017c14e04
+- name: github.com/dogenzaka/rotator
+  version: 97947bef5b937df540b59a9b83d3ce6b9760a138
+- name: github.com/dogenzaka/ruslog
+  version: ba910ae6e7400760edc5c1ac08675fe740a9dfac
+  subpackages:
+  - rotator
 - name: github.com/facebookgo/grace
   version: 5729e484473f52048578af1b80d0008c7024089b
   subpackages:
@@ -10,7 +16,6 @@ imports:
 - name: github.com/garyburd/redigo
   version: 908534c8b97586a4597e3fa195875d2d26502b97
   subpackages:
-  - internal
   - redis
 - name: github.com/go-sql-driver/mysql
   version: 2e00b5cd70399450106cec6431c2e2ce3cae5034
@@ -51,6 +56,8 @@ imports:
   - bcrypt
   - blowfish
   - ocsp
+  - pbkdf2
+  - scrypt
 - name: golang.org/x/net
   version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
   subpackages:

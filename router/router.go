@@ -2,7 +2,6 @@ package router
 
 import (
 	"net/http"
-	"runtime"
 
 	"github.com/CANARIA/canaria-api/api"
 	"github.com/CANARIA/canaria-api/db"
@@ -22,8 +21,6 @@ func init() {
 
 func Init() *echo.Echo {
 	e := echo.New()
-
-	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	e.Debug = true
 	e.Logger.Debug()
