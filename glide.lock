@@ -1,5 +1,5 @@
-hash: 873b47bb45c5bb196696d24904c04f7d66e4c7ed4a53c43550eb2320776064c0
-updated: 2017-03-30T02:03:44.403965773+09:00
+hash: 59b6301383b1812bc9f2ece3b28ffcfbe68b26383f4f197ffb0c7dd66276570b
+updated: 2017-06-08T01:35:41.474725281+09:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: a601269ab70c205d26370c16f7c81e9017c14e04
@@ -48,6 +48,18 @@ imports:
   version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
 - name: github.com/valyala/fasttemplate
   version: d090d65668a286d9a180d43a19dfdc5dcad8fe88
+- name: go.uber.org/atomic
+  version: 4e336646b2ef9fc6e47be8e21594178f98e5ebcf
+- name: go.uber.org/zap
+  version: b33459c467c82258245f3bcf0ef26d0fcf2b79f5
+  subpackages:
+  - atomic
+  - buffer
+  - internal/bufferpool
+  - internal/color
+  - internal/exit
+  - internal/multierror
+  - zapcore
 - name: golang.org/x/crypto
   version: 2f8be38b9a7533b8763d48273737ff6e90428a96
   subpackages:
@@ -68,4 +80,6 @@ imports:
   version: d75a52659825e75fff6158388dddc6a5b04f9ba5
   subpackages:
   - unix
+- name: gopkg.in/natefinch/lumberjack.v2
+  version: a96e63847dc3c67d17befa69c303767e2f84e54f
 testImports: []

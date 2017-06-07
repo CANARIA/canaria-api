@@ -1,15 +1,17 @@
 package env
 
 import (
-	"github.com/Sirupsen/logrus"
-	"github.com/dogenzaka/ruslog"
+	"github.com/CANARIA/canaria-api/config"
+	"github.com/CANARIA/canaria-api/logger"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type LocalEnvironment struct {
 	EnvName string
 	Debug   bool
 	Bind    string
-	Loggers []*ruslog.Logger
+	Loggers []logger.Config
 	// DynamoDBConfig  ServerConfig
 	// RedisConfig     ServerConfig
 	// RedirectConfig  RedirectConfig
@@ -19,18 +21,74 @@ type LocalEnvironment struct {
 func (e *LocalEnvironment) SetUp() error {
 	e.EnvName = Local
 	e.Bind = ":5000"
-	println("~~~~~~~~~~~~~~~~~~~~~~~~")
 
 	logDir := "/tmp"
-	e.Loggers = append(e.Loggers, &ruslog.Logger{
-		Name:        "Default",
-		Type:        ruslog.APPENDER_DAILY,
-		Level:       logrus.DebugLevel.String(),
-		Format:      ruslog.FORMATTER_SIMPLE,
-		FilePath:    logDir + "/app.log",
-		MaxRotation: 10,
-		AddFileInfo: false,
-	})
+
+	canariaLogs := []logger.Config{
+		logger.Config{
+			Name:               config.DefaultLoggerName,
+			Level:              zap.DebugLevel,
+			EncodeLogsAsJSON:   true,
+			FileLoggingEnabled: true,
+			EnabledCaller:      true,
+			Directory:          logDir,
+			Filename:           config.DefaultLoggerName + ".log",
+			MaxBackups:         30,
+			MaxSize:            100,
+			MaxAge:             30,
+		},
+		logger.Config{
+			Name:               config.AccessLoggerName,
+			Level:              zap.DebugLevel,
+			EncodeLogsAsJSON:   false,
+			FileLoggingEnabled: true,
+			Directory:          logDir,
+			Filename:           config.AccessLoggerName + ".log",
+			MaxBackups:         30,
+			MaxSize:            100,
+			MaxAge:             30,
+		},
+		logger.Config{
+			Name:               config.SlowQueryLoggerName,
+			Level:              zap.DebugLevel,
+			EncodeLogsAsJSON:   false,
+			FileLoggingEnabled: true,
+			Directory:          logDir,
+			Filename:           config.SlowQueryLoggerName + ".log",
+			MaxBackups:         30,
+			MaxSize:            100,
+			MaxAge:             30,
+		},
+		logger.Config{
+			Name:  				config.QueryLoggerName,
+			Level: 				zap.InfoLevel,
+			EncoderConfig: 		&zapcore.EncoderConfig{
+									MessageKey: "msg",
+								},
+			EncodeLogsAsJSON:   false,
+			FileLoggingEnabled: true,
+			Directory:          logDir,
+			Filename:           config.QueryLoggerName + ".log",
+			MaxBackups:         30,
+			MaxSize:            100,
+			MaxAge:             30,
+		},
+		logger.Config{
+			Name:  				config.MutationLoggerName,
+			Level: 				zap.InfoLevel,
+			EncoderConfig: 		&zapcore.EncoderConfig{
+									MessageKey: "msg",
+								},
+			EncodeLogsAsJSON:   false,
+			FileLoggingEnabled: true,
+			Directory:          logDir,
+			Filename:           config.MutationLoggerName + ".log",
+			MaxBackups:         30,
+			MaxSize:            100,
+			MaxAge:             30,
+		},
+	}
+	e.Loggers = canariaLogs
 
 	return nil
 }
@@ -48,6 +106,6 @@ func (e *LocalEnvironment) GetBind() string {
 }
 
 // GetLoggers returns loggers
-func (e *LocalEnvironment) GetLoggers() []*ruslog.Logger {
+func (e *LocalEnvironment) GetLoggers() []logger.Config {
 	return e.Loggers
 }

@@ -16,7 +16,7 @@ const (
 	SALT string = "@#$%"
 
 	UserInfo string = "UserInfo"
-	IsDebug  string = "IS_DEBUG"
+	IsDebug  string = "CANARIA_DEBUG"
 	Env      string = "API_ENV"
 )
 

@@ -8,6 +8,7 @@ import (
 	"github.com/CANARIA/canaria-api/config"
 	"github.com/Sirupsen/logrus"
 	"github.com/dogenzaka/ruslog"
+	"github.com/CANARIA/canaria-api/logger"
 )
 
 const (
@@ -21,30 +22,39 @@ type Environment interface {
 	GetEnvName() string
 	GetDebug() bool
 	GetBind() string
-	GetLoggers() []*ruslog.Logger
+	GetLoggers() []*logger.Config
 	// GetDynamoDBConfig() *ServerConfig
 	// GetRedirectConfig() *RedirectConfig
 	// GetCipherMetaInfo(name string) *CipherMetaInfo
 	// GetCipherMetaInfos() *map[string]*CipherMetaInfo
 }
 
-func SetUp() {
-	var env Environment
+var env Environment
 
-	logrus.SetFormatter(&logrus.JSONFormatter{})
+func SetUp(e Environment) {
+	env = e
+	logger.Configure(e.GetLoggers())
+
+	//logrus.SetFormatter(&logrus.JSONFormatter{})
 
 	debug := os.Getenv(config.IsDebug) != ""
 
 	switch os.Getenv(config.Env) {
-	case Staging:
-		fmt.Println("This environment is STG")
-		env = &LocalEnvironment{Debug: debug}
-		if err := env.SetUp(); err != nil {
-			panic(err)
-		}
+	//case Staging:
+	//	fmt.Println("This environment is STG")
+	//	env = &LocalEnvironment{
+	//		EnvName: Staging,
+	//		Debug: debug,
+	//	}
+	//	if err := env.SetUp(); err != nil {
+	//		panic(err)
+	//	}
 	default:
 		fmt.Println("This environment is LOCAL")
-		env = &LocalEnvironment{Debug: debug}
+		env = &LocalEnvironment{
+			EnvName: Local,
+			Debug: debug,
+		}
 		if err := env.SetUp(); err != nil {
 			panic(err)
 		}

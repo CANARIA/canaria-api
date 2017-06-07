@@ -27,4 +27,8 @@ import:
     subpackages:
     - ocsp
   - package: github.com/satori/go.uuid
+  - package: go.uber.org/zap
+    subpackages:
+    - atomic
+  - package: gopkg.in/natefinch/lumberjack.v2
 
