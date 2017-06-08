@@ -8,10 +8,11 @@ import (
 )
 
 type LocalEnvironment struct {
-	EnvName string
-	Debug   bool
-	Bind    string
-	Loggers []logger.Config
+	EnvName  string
+	Debug    bool
+	Bind     string
+	Loggers  []logger.Config
+	DBConfig *DBConfig
 	// DynamoDBConfig  ServerConfig
 	// RedisConfig     ServerConfig
 	// RedirectConfig  RedirectConfig
@@ -19,10 +20,9 @@ type LocalEnvironment struct {
 }
 
 func (e *LocalEnvironment) SetUp() error {
-	e.EnvName = Local
 	e.Bind = ":5000"
 
-	logDir := "/tmp"
+	logDir := "/var/log/canaria/"
 
 	canariaLogs := []logger.Config{
 		logger.Config{
@@ -60,11 +60,11 @@ func (e *LocalEnvironment) SetUp() error {
 			MaxAge:             30,
 		},
 		logger.Config{
-			Name:  				config.QueryLoggerName,
-			Level: 				zap.InfoLevel,
-			EncoderConfig: 		&zapcore.EncoderConfig{
-									MessageKey: "msg",
-								},
+			Name:  config.QueryLoggerName,
+			Level: zap.InfoLevel,
+			EncoderConfig: &zapcore.EncoderConfig{
+				MessageKey: "msg",
+			},
 			EncodeLogsAsJSON:   false,
 			FileLoggingEnabled: true,
 			Directory:          logDir,
@@ -74,11 +74,11 @@ func (e *LocalEnvironment) SetUp() error {
 			MaxAge:             30,
 		},
 		logger.Config{
-			Name:  				config.MutationLoggerName,
-			Level: 				zap.InfoLevel,
-			EncoderConfig: 		&zapcore.EncoderConfig{
-									MessageKey: "msg",
-								},
+			Name:  config.MutationLoggerName,
+			Level: zap.InfoLevel,
+			EncoderConfig: &zapcore.EncoderConfig{
+				MessageKey: "msg",
+			},
 			EncodeLogsAsJSON:   false,
 			FileLoggingEnabled: true,
 			Directory:          logDir,
@@ -89,6 +89,30 @@ func (e *LocalEnvironment) SetUp() error {
 		},
 	}
 	e.Loggers = canariaLogs
+
+	e.DBConfig = &DBConfig{
+		Master: &DB{
+			Host:               "127.0.0.1",
+			Port:               3306,
+			User:               "root",
+			Password:            "",
+			DBName:             "canaria",
+			MaxConnections:     5,
+			MaxIdleConnections: 5,
+		},
+		Slaves: []*DB{
+			&DB{
+				Host:               "127.0.0.1",
+				Port:               3306,
+				User:               "root",
+				Password:            "",
+				DBName:             "canaria",
+				MaxConnections:     5,
+				MaxIdleConnections: 5,
+			},
+		},
+		LogMode: true,
+	}
 
 	return nil
 }
@@ -108,4 +132,8 @@ func (e *LocalEnvironment) GetBind() string {
 // GetLoggers returns loggers
 func (e *LocalEnvironment) GetLoggers() []logger.Config {
 	return e.Loggers
+}
+
+func (e *LocalEnvironment) GetDBConfig() *DBConfig {
+	return e.DBConfig
 }

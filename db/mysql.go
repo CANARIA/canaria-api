@@ -1,31 +1,29 @@
 package db
 
 import (
-	"github.com/CANARIA/canaria-api/config"
 	"github.com/Sirupsen/logrus"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"github.com/CANARIA/canaria-api/env"
 )
 
 func Init() *gorm.DB {
 
-	session := getSession()
+	conf := env.GetDBConfig()
 
-	return session
-
-}
-
-func getSession() *gorm.DB {
-
-	db, err := gorm.Open("mysql",
-		config.USER+":"+config.PASSWORD+"@tcp("+config.HOST+":"+config.PORT+")/"+config.DB+"?parseTime=true")
+	db, err := gorm.Open("mysql", conf.Master.GetMySQLDataSource())
 
 	if err != nil {
 		logrus.Error(err)
-	} else {
-		db.LogMode(true)
-		db.DB().SetMaxOpenConns(5)
-		db.DB().SetMaxIdleConns(5)
 	}
+
+	if conf.LogMode {
+		db.LogMode(true)
+	}
+	db.DB().SetMaxOpenConns(conf.Master.MaxConnections)
+	db.DB().SetMaxIdleConns(conf.Master.MaxIdleConnections)
+
+
 	return db
+
 }
