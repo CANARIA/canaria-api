@@ -1,0 +1,23 @@
+application: stg-canaria-api
+runtime: go
+version: 1
+api_version: go1
+
+env_variables:
+  API_ENV: 'STG'
+
+handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+
+- url: /(.*\.(gif|png|jpg))$
+  static_files: static/\1
+  upload: static/.*\.(gif|png|jpg)$
+
+- url: /.*
+  script: _go_app
+automatic_scaling:
+  min_idle_instances: automatic
+  max_idle_instances: automatic
+  min_pending_latency: automatic
+  max_pending_latency: automatic
