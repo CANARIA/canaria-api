@@ -55,8 +55,8 @@ func Init() *echo.Echo {
 	// 	println("Can not get value")
 	// }
 
-	app.GET("/ping", func(c echo.Context) error {
-		return c.String(http.StatusOK, "pong!")
+	app.GET("/status", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "OK")
 	})
 
 	// api

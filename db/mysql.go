@@ -1,7 +1,6 @@
 package db
 
 import (
-	"github.com/Sirupsen/logrus"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/CANARIA/canaria-api/env"
@@ -14,7 +13,7 @@ func Init() *gorm.DB {
 	db, err := gorm.Open("mysql", conf.Master.GetMySQLDataSource())
 
 	if err != nil {
-		logrus.Error(err)
+		panic(err)
 	}
 
 	if conf.LogMode {

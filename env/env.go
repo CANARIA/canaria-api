@@ -31,7 +31,7 @@ type (
 
 	DB struct {
 		User               string
-		Password            string
+		Password           string
 		Host               string
 		Port               int
 		DBName             string

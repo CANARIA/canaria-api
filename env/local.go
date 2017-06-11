@@ -5,6 +5,7 @@ import (
 	"github.com/CANARIA/canaria-api/logger"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"os"
 )
 
 type LocalEnvironment struct {
@@ -23,6 +24,7 @@ func (e *LocalEnvironment) SetUp() error {
 	e.Bind = ":5000"
 
 	logDir := "/var/log/canaria/"
+	dbPassword := os.Getenv("DOCKER_PASSWORD")
 
 	canariaLogs := []logger.Config{
 		logger.Config{
@@ -95,7 +97,7 @@ func (e *LocalEnvironment) SetUp() error {
 			Host:               "127.0.0.1",
 			Port:               3306,
 			User:               "root",
-			Password:            "",
+			Password:           dbPassword,
 			DBName:             "canaria",
 			MaxConnections:     5,
 			MaxIdleConnections: 5,
@@ -105,7 +107,7 @@ func (e *LocalEnvironment) SetUp() error {
 				Host:               "127.0.0.1",
 				Port:               3306,
 				User:               "root",
-				Password:            "",
+				Password:           dbPassword,
 				DBName:             "canaria",
 				MaxConnections:     5,
 				MaxIdleConnections: 5,
