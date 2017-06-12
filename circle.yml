@@ -56,6 +56,10 @@ dependencies:
     - gcloud config set project $GCLOUD_PROJECT
     - make deps
 
+test:
+  override:
+    - go test -v ./api/...
+
 deployment:
   appengine:
     branch: master
