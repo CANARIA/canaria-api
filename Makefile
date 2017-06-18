@@ -2,7 +2,7 @@ glide:
 	curl https://glide.sh/get | sh
 
 deps:
-	glide install
+	cd $(shell pwd)/src/github.com/CANARIA/canaria-api && glide install
 
 migrate:
 	go get bitbucket.org/liamstask/goose/cmd/goose
