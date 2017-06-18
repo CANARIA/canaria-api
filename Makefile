@@ -12,7 +12,7 @@ fmt:
 	go fmt $(shell go list ./... | grep -v vendor)
 
 run dev:
-	go run server.go
+	GOPATH=$(shell pwd) go run app/server.go
 
 build:
 	GOOS=linux GOARCH=amd64 go build
