@@ -1,6 +1,3 @@
-glide:
-	curl https://glide.sh/get | sh
-
 deps:
 	cd $(shell pwd)/src/github.com/CANARIA/canaria-api && glide install
 
