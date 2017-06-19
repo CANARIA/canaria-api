@@ -7,7 +7,7 @@ import (
 	"github.com/CANARIA/canaria-api/router"
 )
 
-func main() {
+func init() {
 	app := router.Init()
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	app.Logger.Fatal(app.Start(env.GetBind()))
