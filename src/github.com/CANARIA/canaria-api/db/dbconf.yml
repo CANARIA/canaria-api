@@ -1,0 +1,8 @@
+development:
+    # mymysqlに注意
+    driver: mymysql
+    open: tcp:127.0.0.1:3306*canaria/root/password
+
+production:
+    driver: mymysql
+    open: tcp:127.0.0.1:3306*canaria/root/password

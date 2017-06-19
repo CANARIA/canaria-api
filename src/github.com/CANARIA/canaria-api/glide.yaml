@@ -1,0 +1,34 @@
+package: github.com/CANARIA/canaria-api
+import:
+  - package: github.com/labstack/echo
+    subpackages:
+    - middleware
+  - package: github.com/dgrijalva/jwt-go
+  - package: github.com/facebookgo/grace
+    subpackages:
+    - gracehttp
+  - package: github.com/go-sql-driver/mysql
+  - package: github.com/Sirupsen/logrus
+  - package: github.com/dogenzaka/ruslog
+    subpackages:
+    - rotator
+  - package: github.com/jinzhu/gorm
+  - package: github.com/garyburd/redigo
+    subpackages:
+    - redis
+  - package: github.com/kelseyhightower/envconfig
+  - package: github.com/labstack/gommon
+    subpackages:
+    - log
+  - package: golang.org/x/net
+    subpackages:
+    - websocket
+  - package: golang.org/x/crypto
+    subpackages:
+    - ocsp
+  - package: github.com/satori/go.uuid
+  - package: go.uber.org/zap
+    subpackages:
+    - atomic
+  - package: gopkg.in/natefinch/lumberjack.v2
+
