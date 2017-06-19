@@ -64,4 +64,5 @@ deployment:
   appengine:
     branch: [master, develop]
     commands:
+      - rm ~/.appcfg_*
       - $HOME/go_appengine/appcfg.py update ./app -A aerobic-arc-159407 --oauth2_access_token $(gcloud auth print-access-token 2> /dev/null)
