@@ -1,4 +1,3 @@
-application: aerobic-arc-159407
 runtime: go
 version: blue
 api_version: go1
