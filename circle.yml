@@ -61,10 +61,6 @@ test:
   override:
     - ./dummy_test_script.sh
 
-test:
-  override:
-    - go test -v ./api/...
-
 deployment:
   appengine:
     branch: master
