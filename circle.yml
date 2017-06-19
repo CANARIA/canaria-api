@@ -56,6 +56,9 @@ dependencies:
     - gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
     - gcloud config set project $GCLOUD_PROJECT
     - make deps
+test:
+  override:
+    - ./dummy_test_script.sh
 
 deployment:
   appengine:
