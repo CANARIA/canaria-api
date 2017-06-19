@@ -64,4 +64,4 @@ deployment:
   appengine:
     branch: master
     commands:
-      - $HOME/go_appengine/appcfg.py update . --oauth2_access_token $(gcloud auth print-access-token 2> /dev/null)
+      - $HOME/go_appengine/appcfg.py update ./app --oauth2_access_token $(gcloud auth print-access-token 2> /dev/null)
