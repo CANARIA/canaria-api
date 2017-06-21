@@ -1,4 +1,3 @@
-application: stg-canaria-api
 runtime: go
 version: blue
 api_version: go1
