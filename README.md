@@ -8,16 +8,25 @@ golang製APIサーバです。
 
 ## 準備
 
+Goを入れてない場合はインストールする
+```sh
+$ brew install go
+```
+
 GOPATHの設定（任意の場所でいいけど`dev`だと使いやすいかも）
 ```sh
-#zsh使ってる人は`.zshrc`
+# ホームディレクトリにdevディレクトリを作ってない場合は作る
+$ mkdir ~/dev
+
+#zsh使ってる人は`.zshrc`にGOPATHの設定
 $ cat <<EOF >> ~/.bash_profile
 export GOPATH=$HOME/dev
+export GOROOT=/usr/local/opt/go/libexec # brewからインストールした場合
+export PATH=$PATH:$GOPATH/bin
 EOF
 ```
 
-フォークしてリポジトリのクローン
-
+リポジトリのクローン
 ```sh
 $ mkdir -p $GOPATH/src/github.com/CANARIA
 $ git clone git@github.com:CANARIA/canaria-api.git
@@ -28,8 +37,10 @@ $ ghq get git@github.com:CANARIA/canaria-api.git
 
 ## dockerコンテナの立ち上げ
 
+docker for macを入れてない場合は先にインストールする
+
 ```sh
-# コンテナの立ち上げ
+# コンテナの立ち上げ（プロジェクトルートで）
 $ docker-compose up -d mysql redis redis-commander
 
 # コンテナの確認
@@ -44,6 +55,10 @@ $ docker-compose ps
 
 mysqlには`root`/`password`でログインできる<br>
 データベースは`canaria`
+コマンドから使う場合は
+```
+$ mysql -h 127.0.0.1 -u root -p password
+```
 
 redisへは`redis-cli`コマンドで繋がる<br>
 GUIで確認したい場合は`localhost:8081`でRedis Commanderが開ける
@@ -57,11 +72,21 @@ $ make migrate
 ## APIサーバの起動
 
 ```sh
+# (※初回のみ)依存ライブラリの管理にglideを使ってるので初回のみ先にインストール
+$ brew install glide
+
+# (※初回のみ)ログ出力先/var/log/canariaを作成してない場合は作る
+$ sudo mkdir /var/log/canaria
+$ sudo chmod -R 777 /var/log/canaria
+
 # 依存ライブラリのDL
 $ make deps
 
+# 環境変数DOCKER_PASSWORDに設定しないとAPIサーバが立ち上がったときにDBコネクションエラーが出る
+$ export DOCKER_PASSWORD=password
+
 # APIサーバの起動
-$ make run dev または go run server.go
+$ make run dev
 ```
 
 `localhost:5000`でAPIサーバーにアクセスできます
