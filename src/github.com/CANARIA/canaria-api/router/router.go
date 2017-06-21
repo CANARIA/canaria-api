@@ -12,13 +12,13 @@ import (
 	"github.com/CANARIA/canaria-api/env"
 )
 
-func init() {
-	println("最初に実行される")
+//func init() {
+//	println("最初に実行される")
 	// db, err := gorm.Open("mysql", "root:password@tcp(mysql:3306)/canaria?charset=utf8&parseTime=True&loc=Local")
 	// if err != nil {
 	// 	println("DB connection failed")
 	// }
-}
+//}
 
 func Init() *echo.Echo {
 	app := echo.New()
