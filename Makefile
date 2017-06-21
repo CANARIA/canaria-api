@@ -6,7 +6,7 @@ deps:
 migrate:
 	go get bitbucket.org/liamstask/goose/cmd/goose
 	cd $(shell pwd)/src/$(__GITHUB_ORG_REPO) && goose up
-g
+
 fmt:
 	go fmt $(shell go list ./... | grep -v vendor)
 
