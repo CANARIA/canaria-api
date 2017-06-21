@@ -43,7 +43,7 @@ docker for macを入れてない場合は先にインストールする
 # コンテナの立ち上げ（プロジェクトルートで）
 $ docker-compose up -d mysql redis redis-commander
 
-# コンテナの確認
+# コンテナの確認(stateがUPなら立ち上がってる状態)
 $ docker-compose ps
 ```
 
@@ -55,9 +55,10 @@ $ docker-compose ps
 
 mysqlには`root`/`password`でログインできる<br>
 データベースは`canaria`
+
 コマンドから使う場合は
 ```
-$ mysql -h 127.0.0.1 -u root -p password
+$ mysql -h 127.0.0.1 -u root -p
 ```
 
 redisへは`redis-cli`コマンドで繋がる<br>
@@ -82,11 +83,8 @@ $ sudo chmod -R 777 /var/log/canaria
 # 依存ライブラリのDL
 $ make deps
 
-# 環境変数DOCKER_PASSWORDに設定しないとAPIサーバが立ち上がったときにDBコネクションエラーが出る
-$ export DOCKER_PASSWORD=password
-
 # APIサーバの起動
-$ make run dev
+$ DOCKER_PASSWORD=password make run dev
 ```
 
 `localhost:5000`でAPIサーバーにアクセスできます
