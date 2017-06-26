@@ -27,4 +27,4 @@ deployment:
     branch: [master, develop]
     commands:
       #- $HOME/go_appengine/appcfg.py update ./app -V blue -A aerobic-arc-159407 --oauth2_access_token $(gcloud auth print-access-token 2> /dev/null)
-      - sudo /opt/google-cloud-sdk/bin/gcloud app deploy --version blue app/app.yaml --quiet --project aerobic-arc-159407
+      - GOPATH=$(pwd) sudo /opt/google-cloud-sdk/bin/gcloud app deploy --version blue app/app.yaml --quiet --project aerobic-arc-159407

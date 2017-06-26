@@ -1,5 +1,5 @@
 runtime: go
-api_version: 1
+api_version: go1
 
 env_variables:
   API_ENV: 'STG'
