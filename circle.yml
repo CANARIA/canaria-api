@@ -34,13 +34,13 @@ dependencies:
 
 test:
   override:
-    - ./dummy_test_script.sh
+    - ${WORK_DIR}/dummy_test_script.sh
 
 deployment:
   appengine:
     branch: [master, develop]
     commands:
-      - goapp deploy -application canaria-io -version blue ./app/stg.yaml
+      - goapp deploy -application canaria-io -version blue ${WORK_DIR}/app/stg.yaml
 #      - sudo $HOME/go_appengine/goapp deploy -application canaria-io -version blue ./app/stg.yaml
 #      - sudo /home/ubuntu/.go_workspace/bin/aedeploy /opt/google-cloud-sdk/bin/gcloud -q app deploy --version blue app/stg.yaml --promote --project canaria-io
       #- sudo /opt/google-cloud-sdk/bin/gcloud app deploy --version blue app/stg.yaml --quiet --project canaria-io
