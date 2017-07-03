@@ -1,14 +1,10 @@
 runtime: go
 api_version: go1
+service: stg-api
 
 env_variables:
   API_ENV: 'STG'
-
-nobuild_files:
-- vendor
-
-skip_files:
-- vendor/.*$
+  CANARIA_DEBUG: 'true'
 
 handlers:
 - url: /stylesheets

@@ -1,24 +1,18 @@
-hash: 59b6301383b1812bc9f2ece3b28ffcfbe68b26383f4f197ffb0c7dd66276570b
-updated: 2017-06-08T01:35:41.474725281+09:00
+hash: 17baed69b757b774d5d02984f087394f9096dddc9686aa31713b0bc4ae2f2da2
+updated: 2017-07-03T16:16:50.011496442+09:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: a601269ab70c205d26370c16f7c81e9017c14e04
-- name: github.com/dogenzaka/rotator
-  version: 97947bef5b937df540b59a9b83d3ce6b9760a138
-- name: github.com/dogenzaka/ruslog
-  version: ba910ae6e7400760edc5c1ac08675fe740a9dfac
-  subpackages:
-  - rotator
-- name: github.com/facebookgo/grace
-  version: 5729e484473f52048578af1b80d0008c7024089b
-  subpackages:
-  - gracehttp
 - name: github.com/garyburd/redigo
   version: 908534c8b97586a4597e3fa195875d2d26502b97
   subpackages:
   - redis
 - name: github.com/go-sql-driver/mysql
   version: 2e00b5cd70399450106cec6431c2e2ce3cae5034
+- name: github.com/golang/protobuf
+  version: 6a1fa9404c0aebf36c879bc50152edcc953910d2
+  subpackages:
+  - proto
 - name: github.com/jinzhu/gorm
   version: a3b8b332edf4ac4360a4f4cb95979000bd0aef8c
 - name: github.com/jinzhu/inflection
@@ -44,22 +38,8 @@ imports:
   version: b061729afc07e77a8aa4fad0a2fd840958f1942a
 - name: github.com/Sirupsen/logrus
   version: 61e43dc76f7ee59a82bdf3d71033dc12bea4c77d
-- name: github.com/valyala/bytebufferpool
-  version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
 - name: github.com/valyala/fasttemplate
-  version: d090d65668a286d9a180d43a19dfdc5dcad8fe88
-- name: go.uber.org/atomic
-  version: 4e336646b2ef9fc6e47be8e21594178f98e5ebcf
-- name: go.uber.org/zap
-  version: b33459c467c82258245f3bcf0ef26d0fcf2b79f5
-  subpackages:
-  - atomic
-  - buffer
-  - internal/bufferpool
-  - internal/color
-  - internal/exit
-  - internal/multierror
-  - zapcore
+  version: 3b874956e03f1636d171bda64b130f9135f42cff
 - name: golang.org/x/crypto
   version: 2f8be38b9a7533b8763d48273737ff6e90428a96
   subpackages:
@@ -80,6 +60,16 @@ imports:
   version: d75a52659825e75fff6158388dddc6a5b04f9ba5
   subpackages:
   - unix
-- name: gopkg.in/natefinch/lumberjack.v2
-  version: a96e63847dc3c67d17befa69c303767e2f84e54f
+- name: google.golang.org/appengine
+  version: 150dc57a1b433e64154302bdc40b6bb8aefa313a
+  subpackages:
+  - datastore
+  - internal
+  - internal/app_identity
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/modules
+  - internal/remote_api
+  - log
 testImports: []

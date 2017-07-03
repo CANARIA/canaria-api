@@ -3,7 +3,7 @@ machine:
     Asia/Tokyo
   environment:
     # project ID
-    GCLOUD_PROJECT: "aerobic-arc-159407"
+    GCLOUD_PROJECT: "canaria-io"
 
 dependencies:
   pre:
@@ -17,10 +17,10 @@ dependencies:
     #- unzip -q -d $HOME $HOME/go_appengine_1.9.54.zip
     # decode and make service key
     - echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
-    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account aerobic-arc-159407@appspot.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account canaria-io@appspot.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
     - make deps
-    - make symbol
+
 test:
   override:
     - ./dummy_test_script.sh
@@ -29,5 +29,5 @@ deployment:
   appengine:
     branch: [master, develop]
     commands:
-      #- $HOME/go_appengine/appcfg.py update ./app -V blue -A aerobic-arc-159407 --oauth2_access_token $(gcloud auth print-access-token 2> /dev/null)
-      - sudo /opt/google-cloud-sdk/bin/gcloud app deploy --version blue gae/app/app.yaml --quiet --project aerobic-arc-159407
+      - sudo /opt/google-cloud-sdk/platform/google_appengine/goapp deploy -application canaria-io -version blue ./app/stg.yaml
+      # - sudo /opt/google-cloud-sdk/bin/gcloud app deploy --version blue gae/app/prd.yaml --quiet --project canaria-io

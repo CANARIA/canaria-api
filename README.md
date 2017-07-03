@@ -105,3 +105,16 @@ $ docker-compose logs mysql
 $ docker-compose logs -ft mysql
 ```
 
+### GAE
+
+デプロイ例
+```
+$ gcloud app deploy --version blue app/stg.yaml --quiet --project canaria-io
+# ↓はうまくいく
+$ goapp deploy -application canaria-io -version blue ./app/stg.yaml
+```
+
+ターミナルから直接ログを見る
+```
+$ gcloud app logs tail -s stg-api --project canaria-io
+```

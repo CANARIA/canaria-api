@@ -4,9 +4,10 @@ import (
 	"os"
 
 	"fmt"
+	"log"
 
 	"github.com/CANARIA/canaria-api/core/config"
-	"github.com/CANARIA/canaria-api/core/logger"
+	//"github.com/CANARIA/canaria-api/core/logger"
 )
 
 const (
@@ -21,7 +22,7 @@ type (
 		GetEnvName() string
 		GetDebug() bool
 		GetBind() string
-		GetLoggers() []logger.Config
+		//GetLoggers() []logger.Config
 		GetDBConfig() *DBConfig
 		// GetDynamoDBConfig() *ServerConfig
 		// GetRedirectConfig() *RedirectConfig
@@ -54,14 +55,13 @@ var env Environment
 
 func SetUp() {
 
-	//logrus.SetFormatter(&logrus.JSONFormatter{})
-
 	debug := os.Getenv(config.IsDebug) != ""
 
 	switch os.Getenv(config.Env) {
 	case Staging:
-		fmt.Println("This environment is STG")
-		env = &LocalEnvironment{
+		//fmt.Println("This environment is STG")
+		log.Printf("This environment is STG")
+		env = &StgEnvironment{
 			EnvName: Staging,
 			Debug:   debug,
 		}
@@ -69,7 +69,7 @@ func SetUp() {
 			panic(err)
 		}
 	default:
-		fmt.Println("This environment is LOCAL")
+		log.Printf("This environment is LOCAL")
 		env = &LocalEnvironment{
 			EnvName: Local,
 			Debug:   debug,
@@ -79,7 +79,7 @@ func SetUp() {
 		}
 	}
 
-	logger.Configure(env.GetLoggers())
+	//logger.Configure(env.GetLoggers())
 }
 
 func GetEnvName() string {
@@ -94,9 +94,9 @@ func GetBind() string {
 	return env.GetBind()
 }
 
-func GetLoggers() []logger.Config {
-	return env.GetLoggers()
-}
+//func GetLoggers() []logger.Config {
+//	return env.GetLoggers()
+//}
 
 func GetDBConfig() *DBConfig {
 	return env.GetDBConfig()

@@ -10,15 +10,11 @@ import (
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
 	"github.com/CANARIA/canaria-api/core/env"
+	"google.golang.org/appengine/log"
+	"github.com/CANARIA/canaria-api/core/config"
+	"golang.org/x/net/context"
 )
 
-//func init() {
-//	println("最初に実行される")
-	// db, err := gorm.Open("mysql", "root:password@tcp(mysql:3306)/canaria?charset=utf8&parseTime=True&loc=Local")
-	// if err != nil {
-	// 	println("DB connection failed")
-	// }
-//}
 
 func Init() *echo.Echo {
 	app := echo.New()
@@ -28,6 +24,7 @@ func Init() *echo.Echo {
 	app.Debug = true
 	app.Logger.Debug()
 
+	app.Use(appMw.AppEngineContext())
 	app.Use(mw.Logger())
 	app.Use(mw.Recover())
 	app.Use(mw.Gzip())
@@ -55,6 +52,11 @@ func Init() *echo.Echo {
 	// 	println("Can not get value")
 	// }
 
+	app.GET("/", func(c echo.Context) error {
+		ctx := c.Get(config.AppEngineContextName).(*context.Context)
+		log.Debugf(*ctx, "from echo.Context")
+		return c.JSON(http.StatusOK, "hello")
+	})
 	app.GET("/status", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "OK")
 	})
@@ -69,6 +71,7 @@ func Init() *echo.Echo {
 		v1.POST("/auth/check", api.CheckAuth(), appMw.AuthFilter())
 		v1.GET("/populartags", api.PopularTags())
 		v1.GET("/tags", api.Tags())
+		v1.GET("/tags/create", api.Create())
 	}
 
 	return app
