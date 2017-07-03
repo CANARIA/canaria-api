@@ -28,5 +28,5 @@ deployment:
   appengine:
     branch: [master, develop]
     commands:
-      - sudo $HOME/go_appengine/goapp deploy -application canaria-io -version blue ./app/stg.yaml
+      - sudo $HOME/go_appengine/goapp deploy --noauth_local_webserver -application canaria-io -version blue ./app/stg.yaml
 #       - sudo /opt/google-cloud-sdk/bin/gcloud app deploy --version blue app/stg.yaml --quiet --project canaria-io
