@@ -17,7 +17,7 @@ dependencies:
   override:
     # decode and make service key
     - echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
-    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account integration-deploy-manager@canaria-io.iam.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account project-editor-manager@canaria-io.iam.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
     - sudo chmod -R 757 /home/ubuntu/.config/gcloud/logs
     - sudo chmod -R 757 /home/ubuntu/.config/gcloud/credentials
