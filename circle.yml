@@ -32,5 +32,5 @@ deployment:
     branch: [master, develop]
     commands:
       #- sudo $HOME/go_appengine/goapp deploy -application canaria-io -version blue ./app/stg.yaml
-      - /home/ubuntu/.go_workspace/bin/aedeploy /opt/google-cloud-sdk/bin/gcloud -q app deploy --version blue app/stg.yaml --promote --project canaria-io
+      - sudo /home/ubuntu/.go_workspace/bin/aedeploy /opt/google-cloud-sdk/bin/gcloud -q app deploy --version blue app/stg.yaml --promote --project canaria-io
       #- sudo /opt/google-cloud-sdk/bin/gcloud app deploy --version blue app/stg.yaml --quiet --project canaria-io
