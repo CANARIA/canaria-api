@@ -30,6 +30,7 @@ dependencies:
     - sudo chmod -R 757 /home/ubuntu/.config/gcloud/credentials
     - mkdir -p ${WORK_DIR}
     - make deps
+    - rm -rf ${WORK_DIR}/*
     - mv ./* ${WORK_DIR}
 
 test:
