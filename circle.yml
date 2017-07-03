@@ -3,6 +3,10 @@ machine:
     Asia/Tokyo
   environment:
     # project ID
+    PATH: "${PATH}:/opt/google-cloud-sdk/platform/google_appengine"
+    GOPATH: "${HOME}/.go_workspace"
+    PROJECT_NAME: "canaria-api"
+    WORK_DIR: "${GOPATH}/src/${PROJECT_NAME}"
     GCLOUD_PROJECT: "canaria-io"
 
 dependencies:
@@ -10,7 +14,7 @@ dependencies:
     - sudo add-apt-repository ppa:masterminds/glide -y
     - sudo apt-get update
     - sudo apt-get install glide -y
-    - go get google.golang.org/appengine/cmd/aedeploy
+#    - go get google.golang.org/appengine/cmd/aedeploy
     #- curl -o $HOME/go_appengine_1.9.54.zip https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.54.zip
     #- unzip -q -d $HOME $HOME/go_appengine_1.9.54.zip
 
@@ -19,9 +23,14 @@ dependencies:
     - echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account project-editor-manager@canaria-io.iam.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
+    - sudo /opt/google-cloud-sdk/bin/gcloud components update -q
+    - sudo /opt/google-cloud-sdk/bin/gcloud components install app-engine-go -q
+    - sudo chmod +x /opt/google-cloud-sdk/platform/google_appengine/goapp
     - sudo chmod -R 757 /home/ubuntu/.config/gcloud/logs
     - sudo chmod -R 757 /home/ubuntu/.config/gcloud/credentials
+    - mkdir -p ${WORK_DIR}
     - make deps
+    - mv ./* ${WORK_DIR}
 
 test:
   override:
@@ -31,6 +40,7 @@ deployment:
   appengine:
     branch: [master, develop]
     commands:
-      #- sudo $HOME/go_appengine/goapp deploy -application canaria-io -version blue ./app/stg.yaml
-      - sudo /home/ubuntu/.go_workspace/bin/aedeploy /opt/google-cloud-sdk/bin/gcloud -q app deploy --version blue app/stg.yaml --promote --project canaria-io
+      - goapp deploy -application canaria-io -version blue ./app/stg.yaml
+#      - sudo $HOME/go_appengine/goapp deploy -application canaria-io -version blue ./app/stg.yaml
+#      - sudo /home/ubuntu/.go_workspace/bin/aedeploy /opt/google-cloud-sdk/bin/gcloud -q app deploy --version blue app/stg.yaml --promote --project canaria-io
       #- sudo /opt/google-cloud-sdk/bin/gcloud app deploy --version blue app/stg.yaml --quiet --project canaria-io
