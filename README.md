@@ -2,22 +2,59 @@
 
 golang製APIサーバです。
 
-*事前にdocker for macをインストールしておくこと*
+GAE/goを使用しています。
 
 [ghq入れておくと幸せになるかも](http://suzumi.hatenablog.com/entry/2016/10/27/130338)
 
+
 ## 準備
+
+Goを入れてない場合はインストールする
+```sh
+$ brew install go
+```
 
 GOPATHの設定（任意の場所でいいけど`dev`だと使いやすいかも）
 ```sh
-#zsh使ってる人は`.zshrc`
+# ホームディレクトリにdevディレクトリを作ってない場合は作る
+$ mkdir ~/dev
+
+#zsh使ってる人は`.zshrc`にGOPATHの設定
 $ cat <<EOF >> ~/.bash_profile
 export GOPATH=$HOME/dev
+export GOROOT=/usr/local/opt/go/libexec # brewからインストールした場合
+export GOAPP=$HOME/google-cloud-sdk/platform/google_appengine
+export PATH=$PATH:$GOPATH/bin:$GOAPP
 EOF
 ```
 
-フォークしてリポジトリのクローン
+### Google Cloud SDKのインストール
+すべてEnterで進めてOK（bash以外を使ってる人は適宜変更）
+```sh
+$ curl https://sdk.cloud.google.com | bash
+```
 
+gcpコンポーネントのアップデート
+```sh
+$ gcloud components update
+```
+
+AppEngineSDKのインストール
+```sh
+$ gcloud components install app-engine-go
+```
+
+AppEngineSDKがインストール済みになっていることを確認
+```sh
+$ gcloud components list
+```
+
+AppEngineSDKである`goapp`コマンドに実行権限を付けておく
+```sh
+$ chmod +x ~/google-cloud-sdk/platform/google_appengine/goapp
+```
+
+リポジトリのクローン
 ```sh
 $ mkdir -p $GOPATH/src/github.com/CANARIA
 $ git clone git@github.com:CANARIA/canaria-api.git
@@ -26,59 +63,32 @@ $ git clone git@github.com:CANARIA/canaria-api.git
 $ ghq get git@github.com:CANARIA/canaria-api.git
 ```
 
-## dockerコンテナの立ち上げ
-
-```sh
-# コンテナの立ち上げ
-$ docker-compose up -d mysql redis redis-commander
-
-# コンテナの確認
-$ docker-compose ps
-```
-
-立ち上がるコンテナは以下の通り
-- <s>APIコンテナ (:5000)</s>
-- MySQLコンテナ (:3306)
-- Redisコンテナ（:6379）
-- Redis Commanderコンテナ（:8081）
-
-mysqlには`root`/`password`でログインできる<br>
-データベースは`canaria`
-
-redisへは`redis-cli`コマンドで繋がる<br>
-GUIで確認したい場合は`localhost:8081`でRedis Commanderが開ける
-
-
-## DBのマイグレーション
-```sh
-$ make migrate
-```
-
 ## APIサーバの起動
 
 ```sh
+# (※初回のみ)依存ライブラリの管理にglideを使ってるので初回のみ先にインストール
+$ brew install glide
+
 # 依存ライブラリのDL
 $ make deps
 
 # APIサーバの起動
-$ make run dev または go run server.go
+$ make run dev
 ```
 
-`localhost:5000`でAPIサーバーにアクセスできます
+`localhost:8000`でAppEngineSDKにアクセス、
+`localhost:8080`でAPIサーバーにアクセスできます
 
-## デバッグ
+### GAE
 
-```sh
-# すべてのコンテナのログが混ざって出る
-$ docker-compose logs
-
-# 特定コンテナのログのみを見たい(以下の例はmysqlコンテナのログを見る)
-# ※コンテナ名ではなくサービス名を指定すること
-$ docker-compose logs mysql
-
-# オプションの説明
-# f: ストリーミングでログを出力する
-# t: 時間を含めた詳細なログを出力する
-$ docker-compose logs -ft mysql
+デプロイ例(直接ローカルからデプロイすることはないがメモ程度に)
+```
+$ gcloud app deploy --version blue app/stg.yaml --quiet --project canaria-io
+# ↓はうまくいく
+$ goapp deploy -application canaria-io -version blue ./app/stg.yaml
 ```
 
+ターミナルから直接ログを見る
+```
+$ gcloud app logs tail -s stg-api --project canaria-io
+```
