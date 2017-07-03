@@ -17,7 +17,7 @@ dependencies:
     #- unzip -q -d $HOME $HOME/go_appengine_1.9.54.zip
     # decode and make service key
     - echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
-    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account canaria-io@appspot.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account integration-deploy-manager@canaria-io.iam.gserviceaccount.com --key-file ${HOME}/gcloud-service-key.json
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
     - make deps
 
