@@ -6,7 +6,6 @@ GAE/goを使用しています。
 
 [ghq入れておくと幸せになるかも](http://suzumi.hatenablog.com/entry/2016/10/27/130338)
 
----
 
 ## 準備
 
@@ -82,7 +81,7 @@ $ make run dev
 
 ### GAE
 
-デプロイ例
+デプロイ例(直接ローカルからデプロイすることはないがメモ程度に)
 ```
 $ gcloud app deploy --version blue app/stg.yaml --quiet --project canaria-io
 # ↓はうまくいく

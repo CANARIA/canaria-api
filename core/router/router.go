@@ -13,6 +13,8 @@ import (
 	"google.golang.org/appengine/log"
 	"github.com/CANARIA/canaria-api/core/config"
 	"golang.org/x/net/context"
+	"os"
+	"fmt"
 )
 
 
@@ -55,7 +57,8 @@ func Init() *echo.Echo {
 	app.GET("/", func(c echo.Context) error {
 		ctx := c.Get(config.AppEngineContextName).(*context.Context)
 		log.Debugf(*ctx, "from echo.Context")
-		return c.JSON(http.StatusOK, "hello")
+		apiEnv := os.Getenv("API_ENV")
+		return c.JSON(http.StatusOK, fmt.Sprintf("hello! %s", apiEnv))
 	})
 	app.GET("/status", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "OK")

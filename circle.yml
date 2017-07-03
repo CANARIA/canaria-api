@@ -38,8 +38,12 @@ test:
     - ${WORK_DIR}/dummy_test_script.sh
 
 deployment:
-  appengine:
-    branch: [master, develop]
+  production:
+    branch: master
+    commands:
+      - appcfg.py update -A canaria-io -V blue --oauth2_access_token $(gcloud auth print-access-token 2> /dev/null) ${WORK_DIR}/app/prd.yaml
+  staging:
+    branch: develop
     commands:
       - appcfg.py update -A canaria-io -V blue --oauth2_access_token $(gcloud auth print-access-token 2> /dev/null) ${WORK_DIR}/app/stg.yaml
 #      - sudo $HOME/go_appengine/goapp deploy -application canaria-io -version blue ./app/stg.yaml
