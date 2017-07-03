@@ -2,11 +2,11 @@ machine:
   timezone:
     Asia/Tokyo
   environment:
-    # project ID
     PATH: "${PATH}:/opt/google-cloud-sdk/platform/google_appengine"
     GOPATH: "${HOME}/.go_workspace"
-    PROJECT_NAME: "canaria-api"
+    PROJECT_NAME: "github.com/CANARIA/canaria-api"
     WORK_DIR: "${GOPATH}/src/${PROJECT_NAME}"
+    # project ID
     GCLOUD_PROJECT: "canaria-io"
 
 dependencies:
@@ -41,7 +41,7 @@ deployment:
   appengine:
     branch: [master, develop]
     commands:
-      - goapp deploy -application canaria-io -version blue ${WORK_DIR}/app/stg.yaml
+      - appcfg.py update -A canaria-io -V blue --oauth2_access_token $(gcloud auth print-access-token 2> /dev/null) ${WORK_DIR}/app/stg.yaml
 #      - sudo $HOME/go_appengine/goapp deploy -application canaria-io -version blue ./app/stg.yaml
 #      - sudo /home/ubuntu/.go_workspace/bin/aedeploy /opt/google-cloud-sdk/bin/gcloud -q app deploy --version blue app/stg.yaml --promote --project canaria-io
       #- sudo /opt/google-cloud-sdk/bin/gcloud app deploy --version blue app/stg.yaml --quiet --project canaria-io
