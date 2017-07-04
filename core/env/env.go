@@ -59,8 +59,7 @@ func SetUp() {
 
 	switch os.Getenv(config.Env) {
 	case Staging:
-		//fmt.Println("This environment is STG")
-		log.Printf("This environment is STG")
+		log.Printf("This environment is %s", Staging)
 		env = &StgEnvironment{
 			EnvName: Staging,
 			Debug:   debug,
@@ -68,8 +67,17 @@ func SetUp() {
 		if err := env.SetUp(); err != nil {
 			panic(err)
 		}
+	case Production:
+		log.Printf("This environment is %s", Production)
+		env = &StgEnvironment{
+			EnvName: Production,
+			Debug:   debug,
+		}
+		if err := env.SetUp(); err != nil {
+			panic(err)
+		}
 	default:
-		log.Printf("This environment is LOCAL")
+		log.Printf("This environment is %s", Local)
 		env = &LocalEnvironment{
 			EnvName: Local,
 			Debug:   debug,
