@@ -1,6 +1,6 @@
 # Canaria-api
 
-[![CircleCI](https://circleci.com/gh/CANARIA/canaria-api.svg?style=svg)](https://circleci.com/gh/CANARIA/canaria-api)
+[![CircleCI](https://circleci.com/gh/CANARIA/canaria-api.svg?style=svg&circle-token=b1c69b608402da620ab9a7cc6c4f69453723b601)](https://circleci.com/gh/CANARIA/canaria-api)
 
 golang製APIサーバです。
 
