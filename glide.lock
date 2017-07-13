@@ -1,5 +1,5 @@
-hash: 17baed69b757b774d5d02984f087394f9096dddc9686aa31713b0bc4ae2f2da2
-updated: 2017-07-03T16:16:50.011496442+09:00
+hash: f6b7d32f61465919d70383d9eface8a69b0ade2dbb8c9564ada451bbb64c1cac
+updated: 2017-07-04T23:18:25.816731674+09:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: a601269ab70c205d26370c16f7c81e9017c14e04
@@ -34,6 +34,8 @@ imports:
   version: d228849504861217f796da67fae4f6e347643f15
 - name: github.com/mattn/go-isatty
   version: 30a891c33c7cde7b02a981314b4228ec99380cca
+- name: github.com/mjibson/goon
+  version: 4704d2914e39207b9ea1f29065975a803e96b8ae
 - name: github.com/satori/go.uuid
   version: b061729afc07e77a8aa4fad0a2fd840958f1942a
 - name: github.com/Sirupsen/logrus

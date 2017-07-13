@@ -30,6 +30,7 @@ import:
   - package: github.com/valyala/fasttemplate
     version: 3b874956e03f1636d171bda64b130f9135f42cff
   - package: google.golang.org/appengine
+  - package: github.com/mjibson/goon
 #  - package: go.uber.org/zap
 #    version: fab453050a7a08c35f31fc5fff6f2dbd962285ab
 #    subpackages:

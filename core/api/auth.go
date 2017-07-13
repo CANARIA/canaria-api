@@ -14,43 +14,72 @@ import (
 	"github.com/CANARIA/canaria-api/core/config"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
+	"github.com/mjibson/goon"
+	//"golang.org/x/net/context"
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/log"
 )
 
 // 仮登録
 func PreRegister() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var account model.Account
+		//var account model.Account
 
 		preJson := new(model.PreRegister)
 		if err := c.Bind(preJson); err != nil {
 			return err
 		}
+		//account := model.Account{
+		//	//UserId: 1,
+		//	UserName: "test",
+		//	MailAddress: "test@hoge.com",
+		//	Password: "password",
+		//	Roll: 1,
+		//	CreatedAt: time.Now(),
+		//	UpdatedAt: time.Now(),
+		//	IsDeleted: false,
+		//}
+		ctx := appengine.NewContext(c.Request())
+		goon := goon.FromContext(ctx)
 
-		tx := c.Get("Tx").(*gorm.DB)
+		//if _, err := goon.Put(&account); err != nil {
+		//	log.Errorf(ctx, "err: %s", err)
+		//	return err
+		//}
 
-		tx.Select("*").
-			Table("accounts").
-			Where("mailaddress = ?", preJson.MailAddress).
-			Find(&account)
-
-		if (model.Account{}) != account {
-			return echo.NewHTTPError(http.StatusBadRequest, message.REGISTERD_MAILADDRESS)
+		var resAccount model.Account
+		resAccount.MailAddress = preJson.MailAddress
+		if err := goon.Get(&resAccount); err == nil {
+			log.Errorf(ctx, "email was already exists: %s", resAccount.MailAddress)
+			return c.JSON(http.StatusBadRequest, message.REGISTERD_MAILADDRESS)
 		}
+
+		//
+		//tx := c.Get("Tx").(*gorm.DB)
+		//
+		//tx.Select("*").
+		//	Table("accounts").
+		//	Where("mailaddress = ?", preJson.MailAddress).
+		//	Find(&account)
+		//
+		//if (model.Account{}) != account {
+		//	return echo.NewHTTPError(http.StatusBadRequest, message.REGISTERD_MAILADDRESS)
+		//}
 
 		// トークンをセット
 		token := util.GenerateToken()
 		preAccount := model.PreAccountImpl(preJson, token)
-		if err := preAccount.PreAccountCreate(tx); err != nil {
+		if err := preAccount.PreAccountCreate(goon, ctx); err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 
 		url := model.BuildRegisterUrl(token)
-
-		// mailを送る
-		mail := mail.BuildPreRegisterMail(*preAccount, url)
+		//
+		//// mailを送る
+		mail := mail.BuildPreRegisterMail(ctx, *preAccount, url)
 		mail.Send()
 
-		return c.JSON(http.StatusOK, "Ok")
+		return c.JSON(http.StatusOK, "ok")
 	}
 }
 
