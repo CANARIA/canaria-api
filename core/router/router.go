@@ -65,7 +65,7 @@ func Init() *echo.Echo {
 	})
 
 	// api
-	v1 := app.Group("/api/v1")
+	v1 := app.Group("/v1")
 	{
 		v1.POST("/auth/checktoken", api.CheckToken())
 		v1.POST("/auth/preregister", api.PreRegister())
