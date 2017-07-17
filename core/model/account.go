@@ -12,14 +12,15 @@ import (
 
 type (
 	Account struct {
-		UserId      int64     `gorm:"column:user_id;primary_key"`
-		UserName    string    `gorm:"column:user_name"`
-		MailAddress string    `gorm:"column:mailaddress"`
-		Password    string    `gorm:"column:password"`
-		Roll        int8      `gorm:"column:roll"`
-		CreatedAt   time.Time `gorm:"column:created_at"`
-		UpdatedAt   time.Time `gorm:"column:updated_at"`
-		IsDeleted   bool      `gorm:"column:is_deleted"`
+		MailAddress string    `datastore:"-" goon:"id"`
+		//UserId      int64     `datastore:"-" goon:"parent"`
+
+		UserName    string    `datastore:"user_name"`
+		Password    string    `datastore:"password"`
+		Roll        int8      `datastore:"roll"`
+		CreatedAt   time.Time `datastore:"created_at"`
+		UpdatedAt   time.Time `datastore:"updated_at"`
+		IsDeleted   bool      `datastore:"is_deleted"`
 	}
 	accountDao struct {
 		*gorm.DB
@@ -51,7 +52,7 @@ func (dao *accountDao) table() *gorm.DB {
 
 func AccountImpl(authRegister *AuthRegister, preAccount *PreAccount) *Account {
 	return &Account{
-		UserId:      0,
+		//UserId:      0,
 		UserName:    authRegister.UserName,
 		MailAddress: preAccount.MailAddress,
 		Password:    util.ToCrypt(authRegister.Password),

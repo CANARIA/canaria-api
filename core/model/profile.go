@@ -52,7 +52,7 @@ func (dao *profileDao) table() *gorm.DB {
 func (dao *profileDao) ProfileImpl(authRegister *AuthRegister, account *Account) *Profile {
 	return &Profile{
 		DisplayName: authRegister.UserName,
-		UserId:      account.UserId,
+		//UserId:      account.UserId,
 		CreatedAt:   time.Now(),
 	}
 }

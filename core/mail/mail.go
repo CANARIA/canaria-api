@@ -10,6 +10,7 @@ import (
 
 type (
 	Mail struct {
+		ctx context.Context
 		To      string
 		From    string
 		Cc      string
@@ -19,10 +20,11 @@ type (
 	}
 )
 
-func BuildPreRegisterMail(preAccount model.PreAccount, url string) *Mail {
+func BuildPreRegisterMail(ctx context.Context, preAccount model.PreAccount, url string) *Mail {
 
 	body := message.PRE_REGISTER_MAIL_BODY + url
 	return &Mail{
+		ctx: ctx,
 		To:      preAccount.MailAddress,
 		From:    config.GetMailAddress(),
 		Subject: message.PREREGISTER_SUBJECT,

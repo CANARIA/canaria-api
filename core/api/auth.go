@@ -20,6 +20,7 @@ import (
 // 仮登録
 func PreRegister() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
 		ctx := appengine.NewContext(c.Request())
 		var account model.Account
 
@@ -27,22 +28,47 @@ func PreRegister() echo.HandlerFunc {
 		if err := c.Bind(preJson); err != nil {
 			return err
 		}
+		//account := model.Account{
+		//	//UserId: 1,
+		//	UserName: "test",
+		//	MailAddress: "test@hoge.com",
+		//	Password: "password",
+		//	Roll: 1,
+		//	CreatedAt: time.Now(),
+		//	UpdatedAt: time.Now(),
+		//	IsDeleted: false,
+		//}
+		ctx := appengine.NewContext(c.Request())
+		goon := goon.FromContext(ctx)
 
-		tx := c.Get("Tx").(*gorm.DB)
+		//if _, err := goon.Put(&account); err != nil {
+		//	log.Errorf(ctx, "err: %s", err)
+		//	return err
+		//}
 
-		tx.Select("*").
-			Table("accounts").
-			Where("mailaddress = ?", preJson.MailAddress).
-			Find(&account)
-
-		if (model.Account{}) != account {
-			return echo.NewHTTPError(http.StatusBadRequest, message.REGISTERD_MAILADDRESS)
+		var resAccount model.Account
+		resAccount.MailAddress = preJson.MailAddress
+		if err := goon.Get(&resAccount); err == nil {
+			log.Errorf(ctx, "email was already exists: %s", resAccount.MailAddress)
+			return c.JSON(http.StatusBadRequest, message.REGISTERD_MAILADDRESS)
 		}
+
+		//
+		//tx := c.Get("Tx").(*gorm.DB)
+		//
+		//tx.Select("*").
+		//	Table("accounts").
+		//	Where("mailaddress = ?", preJson.MailAddress).
+		//	Find(&account)
+		//
+		//if (model.Account{}) != account {
+		//	return echo.NewHTTPError(http.StatusBadRequest, message.REGISTERD_MAILADDRESS)
+		//}
 
 		// トークンをセット
 		token := util.GenerateToken()
 		preAccount := model.PreAccountImpl(preJson, token)
-		if err := preAccount.PreAccountCreate(tx); err != nil {
+		if err := preAccount.PreAccountCreate(goon, ctx); err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 
@@ -52,7 +78,7 @@ func PreRegister() echo.HandlerFunc {
 		mail := mail.BuildPreRegisterMail(*preAccount, url)
 		mail.Send(ctx)
 
-		return c.JSON(http.StatusOK, "Ok")
+		return c.JSON(http.StatusOK, "ok")
 	}
 }
 

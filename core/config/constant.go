@@ -26,4 +26,6 @@ const (
 	SlowQueryLoggerName string = "slowquery"
 
 	AppEngineContextName string = "appenginectx"
+
+	Goon string = "goon"
 )

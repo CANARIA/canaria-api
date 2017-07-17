@@ -6,6 +6,9 @@ import (
 
 	"github.com/CANARIA/canaria-api/core/config"
 	"github.com/jinzhu/gorm"
+	"google.golang.org/appengine/log"
+	"github.com/mjibson/goon"
+	"golang.org/x/net/context"
 )
 
 var auth Auth
@@ -17,11 +20,11 @@ type (
 	}
 
 	PreAccount struct {
-		Id          int64      `gorm:"column:id;primary_key"`
-		UrlToken    string     `gorm:"column:url_token"`
-		CreatedAt   *time.Time `gorm:"column:created_at"`
-		MailAddress string     `gorm:"column:mailaddress"`
-		IsRegisterd bool       `gorm:"column:is_registered"`
+		Id           int64      `datastore:"-" goon:"id"`
+		UrlToken     string     `datastore:"url_token"`
+		CreatedAt    time.Time `datastore:"created_at"`
+		MailAddress  string     `datastore:"mail_address"`
+		IsRegistered bool       `datastore:"is_registered"`
 	}
 
 	preAccountDao struct {
@@ -55,16 +58,21 @@ func (dao *preAccountDao) table() *gorm.DB {
 
 func PreAccountImpl(preRegister *PreRegister, token string) *PreAccount {
 	return &PreAccount{
-		Id:          0,
 		UrlToken:    token,
 		MailAddress: preRegister.MailAddress,
 	}
 }
 
-func (preAccount *PreAccount) PreAccountCreate(tx *gorm.DB) error {
-	if res := tx.Create(preAccount); res.Error != nil {
-		return fmt.Errorf("failed PreAccount create: %s", res.Error.Error())
+func (preAccount *PreAccount) PreAccountCreate(goon *goon.Goon, ctx context.Context) error {
+
+	if _, err := goon.Put(preAccount); err != nil {
+		log.Errorf(ctx, "failed PreAccount create: %s", err)
+		return err
 	}
+
+	//if res := tx.Create(preAccount); res.Error != nil {
+	//	return fmt.Errorf("failed PreAccount create: %s", res.Error.Error())
+	//}
 
 	return nil
 }
@@ -86,7 +94,7 @@ func BuildPreAccountEntity(auth *Auth, preAccount *PreAccount) *PreAccount {
 */
 func (dao *preAccountDao) AcctivateAccount(preAccountRow *PreAccount) error {
 
-	preAccount := &PreAccount{IsRegisterd: true}
+	preAccount := &PreAccount{IsRegistered: true}
 
 	res := dao.table().
 		Where("url_token = ? AND mailaddress = ?", preAccountRow.UrlToken, &preAccountRow.MailAddress).
