@@ -1,11 +1,11 @@
 package mail
 
 import (
-	"fmt"
-
 	"github.com/CANARIA/canaria-api/core/config"
 	"github.com/CANARIA/canaria-api/core/message"
 	"github.com/CANARIA/canaria-api/core/model"
+	"golang.org/x/net/context"
+	"google.golang.org/appengine/log"
 )
 
 type (
@@ -39,14 +39,13 @@ func BuildRegisteredMail(preAccount *model.PreAccount) *Mail {
 		Body:    message.REGISTER_MAIL_BODY,
 	}
 }
-
-func (mail *Mail) Send() {
-	fmt.Printf("Mail To: %s\n", mail.To)
-	fmt.Printf("Mail CC: %s\n", mail.Cc)
-	fmt.Printf("Mail BCC: %s\n", mail.Bcc)
-	fmt.Printf("Mail FROM: %s\n", mail.From)
-	fmt.Printf("Mail SUBJECT: %s\n", mail.Subject)
-	fmt.Printf("Mail BODY: %s\n", mail.Body)
+func (mail *Mail) Send(ctx context.Context) {
+	log.Infof(ctx, "Mail To: %s\n", mail.To)
+	log.Infof(ctx, "Mail CC: %s\n", mail.Cc)
+	log.Infof(ctx, "Mail BCC: %s\n", mail.Bcc)
+	log.Infof(ctx, "Mail FROM: %s\n", mail.From)
+	log.Infof(ctx, "Mail SUBJECT: %s\n", mail.Subject)
+	log.Infof(ctx, "Mail BODY: %s\n", mail.Body)
 
 	// Connect to the remote SMTP server.
 	// c, err := smtp.Dial("localhost:25")

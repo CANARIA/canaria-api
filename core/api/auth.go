@@ -14,12 +14,14 @@ import (
 	"github.com/CANARIA/canaria-api/core/config"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
+	"google.golang.org/appengine"
 )
 
 // 仮登録
 func PreRegister() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var account model.Account
+		ctx := appengine.NewContext(c.Request())
 
 		preJson := new(model.PreRegister)
 		if err := c.Bind(preJson); err != nil {
@@ -48,7 +50,7 @@ func PreRegister() echo.HandlerFunc {
 
 		// mailを送る
 		mail := mail.BuildPreRegisterMail(*preAccount, url)
-		mail.Send()
+		mail.Send(ctx)
 
 		return c.JSON(http.StatusOK, "Ok")
 	}
@@ -84,6 +86,7 @@ func CheckToken() echo.HandlerFunc {
 */
 func AuthRegister() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		ctx := appengine.NewContext(c.Request())
 
 		authJson := new(model.AuthRegister)
 		if err := c.Bind(authJson); err != nil {
@@ -131,7 +134,7 @@ func AuthRegister() echo.HandlerFunc {
 		// TODO: Session発行
 		// 登録確認メール送信
 		mail := mail.BuildRegisteredMail(preAccount)
-		mail.Send()
+		mail.Send(ctx)
 
 		return c.JSON(http.StatusOK, authJson)
 	}
